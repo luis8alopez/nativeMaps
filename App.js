@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import FindMe from './src/screens/FindMe';
+import { StyleSheet, View } from 'react-native';
+import FindMe from './components/FindMe';
 
 import Header from './components/Header';
 import MapaScreen from './screens/MapaScreen';
@@ -37,7 +36,7 @@ export default function App() {
 
     return (
       <View style={styles.container}>
-        <Header>Hello</Header>
+        <Header title="Bienvenido a la app"/>
         {ventana}
       </View>
     );
