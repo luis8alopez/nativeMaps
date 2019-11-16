@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
- 
+import Card from './Card';
+
+
 const FindMe = props => {
     state = {
         location: null,
@@ -37,7 +39,7 @@ const FindMe = props => {
         }
 
         let location = await Location.getCurrentPositionAsync({
-            accuracy:6
+            accuracy: 6
         });
         setLocation({ location });
         props.onGetLoc(location);
@@ -55,7 +57,9 @@ const FindMe = props => {
     }
     return (
         <View style={styles.why}>
-            <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
+            <Card style={styles.card}>
+                <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
+            </Card>
             <Text>{text}</Text>
         </View>
     );
@@ -65,7 +69,7 @@ const FindMe = props => {
 const styles = StyleSheet.create({
     why: {
         flex: 1,
-        marginVertical: 250
+        marginVertical: 220
     },
     container: {
         flex: 1,
@@ -76,6 +80,16 @@ const styles = StyleSheet.create({
     mapStyle: {
         width: '90%',
         height: '80%',
+    },
+    card:{
+        height: 200,
+        width: 200,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#B4E1FF'
+    },
+    button: {
+        color:'#F7ECE1'
     }
 });
 

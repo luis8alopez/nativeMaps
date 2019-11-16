@@ -4,6 +4,7 @@ import FindMe from './components/FindMe';
 
 import Header from './components/Header';
 import MapaScreen from './screens/MapaScreen';
+import HomeScreen from './screens/HomeScreen';
 
 export default function App() {  
   const [vista, setVista] = useState(0);
@@ -28,15 +29,21 @@ export default function App() {
   }
 
 
-  let ventana = <FindMe onGetLoc={locationHandler} onGetLong={longHandler} onGetLat={latHandler} onVista={vistaHandler}/> 
+  let ventana = <HomeScreen/>
 
+  if(vista===0){
+    ventana = <HomeScreen onVista={vistaHandler}/>
+  }
   if(vista === 1){
     ventana = <MapaScreen onLon={long} onLat={lat}/>
+  }
+  if(vista ===2){
+    ventana = <FindMe onGetLoc={locationHandler} onGetLong={longHandler} onGetLat={latHandler} onVista={vistaHandler}/>
   }
 
     return (
       <View style={styles.container}>
-        <Header title="Bienvenido a la app"/>
+        <Header title="Native Maps"/>
         {ventana}
       </View>
     );
