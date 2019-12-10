@@ -6,11 +6,23 @@ import Header from './components/Header';
 import MapaScreen from './screens/MapaScreen';
 import HomeScreen from './screens/HomeScreen';
 
-export default function App() {  
+import { withAuthenticator } from 'aws-amplify-react-native';
+import Amplify from '@aws-amplify/core';
+import config from './aws-exports';
+Amplify.configure(config);
+
+export default function App() {
+  state ={
+    vista: 0,
+    loc:'',
+    long:0,
+    lat:0
+  }  
   const [vista, setVista] = useState(0);
   const [loc, setLoc] = useState();
   const [long, setLong] = useState(0);
   const [lat, setLat] = useState(0);
+
 
   const locationHandler = locacion => {
     setLoc(locacion);
@@ -40,13 +52,14 @@ export default function App() {
   if(vista ===2){
     ventana = <FindMe onGetLoc={locationHandler} onGetLong={longHandler} onGetLat={latHandler} onVista={vistaHandler}/>
   }
-
+  
     return (
       <View style={styles.container}>
         <Header title="Native Maps"/>
         {ventana}
       </View>
     );
+  
 }
 
 const styles = StyleSheet.create({

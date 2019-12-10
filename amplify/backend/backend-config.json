@@ -1,0 +1,9 @@
+{
+    "auth": {
+        "nativemaps5a9f1b59": {
+            "service": "Cognito",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": []
+        }
+    }
+}

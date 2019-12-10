@@ -1,32 +1,63 @@
 import React, { useState } from 'react';
 import MapView from 'react-native-maps';
 import { StyleSheet, View, Dimensions } from 'react-native';
-import {Marker} from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 
 
 const MapaScreen = props => {
 
-    const longitude = parseInt(props.onLon);
-    console.log(props.onLon);
+    const [markers, setMarkers] = useState();
 
-    let markers =
-    {
-        latitude: props.onLat,
-        longitude: props.onLon,
+    //console.log(props.onLon);
+
+    // let marker =
+    // {
+    //     latlng: {
+    //         latitude: props.onLat,
+    //         longitude: props.onLon,
+    //     },
+    //     title: 'Test',
+    //     description: 'testing the map'
+    // };
+
+    markCurrentLocation = (event) => {
+
+        let marker =
+        {
+            latlng: {
+                latitude: event.latitude,
+                longitude: event.longitude
+            },
+            title: 'new marker',
+            description: 'new'
+        };
+
+        setMarkers(marker);
+
+        console.log(marker);
+
     };
-
 
     return (
         <View style={styles.container}>
             <MapView style={styles.mapStyle}
+                showsUserLocation
+                onPress={e => markCurrentLocation(e.nativeEvent.coordinate)}
                 initialRegion={{
                     latitude: props.onLat,
                     longitude: props.onLon,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
-                }} annotations={markers} >
-
-                <Marker coordinate={markers} />
+                }} >
+                
+                {
+                /* {markers.map(marker => (
+                    <Marker
+                        coordinate={marker.latlng}
+                        title={marker.title}
+                        description={marker.description}
+                    />
+                ))} */}
             </MapView>
 
         </View>

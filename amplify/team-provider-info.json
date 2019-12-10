@@ -1,0 +1,22 @@
+{
+    "natmap": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-nativemaps-natmap-221426-authRole",
+            "UnauthRoleArn": "arn:aws:iam::459942953847:role/amplify-nativemaps-natmap-221426-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::459942953847:role/amplify-nativemaps-natmap-221426-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "amplify-nativemaps-natmap-221426-deployment",
+            "UnauthRoleName": "amplify-nativemaps-natmap-221426-unauthRole",
+            "StackName": "amplify-nativemaps-natmap-221426",
+            "StackId": "arn:aws:cloudformation:us-east-2:459942953847:stack/amplify-nativemaps-natmap-221426/2dcf8670-1afb-11ea-9ed0-065ddb117676",
+            "AmplifyAppId": "dtfutwgb8wygz"
+        },
+        "categories": {
+            "auth": {
+                "nativemaps5a9f1b59": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Google\",\"client_id\":\"325384024446-47s6iu0mqt0al8mm0fjljbmbl9enb6o5.apps.googleusercontent.com\",\"client_secret\":\"JXnWLXK3tWSwk3h8i3w3lX_A\"}]"
+                }
+            }
+        }
+    }
+}
