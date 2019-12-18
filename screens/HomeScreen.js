@@ -21,7 +21,9 @@ const HomeScreen = props => {
                 <TextInput style={styles.text} underlineColorAndroid='grey' placeholder=' Enter user'></TextInput>
                 <TextInput style={styles.text} underlineColorAndroid='grey' placeholder=' Enter pass'></TextInput>
                 <Button style={styles.button} title="Log" onPress={change} />
-                <Button style={styles.goo} title="With Google" onPress={() => Auth.federatedSignIn({provider:"Google"})}/>
+                <View style={styles.log}>
+                    <Button style={styles.goo} title="With Google" onPress={() => Auth.federatedSignIn({provider:"Google"})}/>
+                </View>
             </View>
         </View>
     );
@@ -34,7 +36,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     log: {
-        padding: 10
+        padding: 10,
+        width: 200
 
     },
     input: {

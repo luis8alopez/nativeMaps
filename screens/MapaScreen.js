@@ -1,69 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MapView from 'react-native-maps';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { Marker } from 'react-native-maps';
+let id = 0;
 
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = 0.0912;
 
-const MapaScreen = props => {
-
-    const [markers, setMarkers] = useState();
-
-    //console.log(props.onLon);
-
-    // let marker =
-    // {
-    //     latlng: {
-    //         latitude: props.onLat,
-    //         longitude: props.onLon,
-    //     },
-    //     title: 'Test',
-    //     description: 'testing the map'
-    // };
-
-    markCurrentLocation = (event) => {
-
-        let marker =
-        {
-            latlng: {
-                latitude: event.latitude,
-                longitude: event.longitude
-            },
-            title: 'new marker',
-            description: 'new'
-        };
-
-        setMarkers(marker);
-
-        console.log(marker);
-
-    };
-
-    return (
-        <View style={styles.container}>
-            <MapView style={styles.mapStyle}
-                showsUserLocation
-                onPress={e => markCurrentLocation(e.nativeEvent.coordinate)}
-                initialRegion={{
-                    latitude: props.onLat,
-                    longitude: props.onLon,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }} >
-                
-                {
-                /* {markers.map(marker => (
-                    <Marker
-                        coordinate={marker.latlng}
-                        title={marker.title}
-                        description={marker.description}
-                    />
-                ))} */}
-            </MapView>
-
-        </View>
-    );
-
+function randomColor() {
+    return `#${Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, 0)}`;
 }
+
+class MapaScreen extends React.Component {
+    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            region: {
+                latitude: this.props.onLat,
+                longitude: this.props.onLon,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+            },
+            markers: [],
+        };
+    }
+
+    onMapPress(e) {
+        this.setState({
+            markers: [
+                ...this.state.markers,
+                {
+                    coordinate: e.nativeEvent.coordinate,
+                    key: id++,
+                    color: randomColor(),
+                },
+            ],
+        });
+        console.log(e.nativeEvent.coordinate);
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <MapView style={styles.mapStyle}
+                    showsUserLocation
+                    onPress={e => this.onMapPress(e)}
+                    initialRegion={{
+                        latitude: this.props.onLat,
+                        longitude: this.props.onLon,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }} >
+
+                    {this.state.markers.map(marker => (
+                        <Marker
+                            key={marker.key}
+                            coordinate={marker.coordinate}
+                            pinColor={marker.color}
+                        />
+                    ))}
+                </MapView>
+            </View>
+        );
+    }
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
