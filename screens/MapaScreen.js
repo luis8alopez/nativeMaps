@@ -48,15 +48,17 @@ class MapaScreen extends React.Component {
             ],
         });
         console.log(e.nativeEvent.coordinate);
+        console.log(this.state.markers[0],"marker 0");
         // Error acá
         //Necesitamos solo 2 marcadores en el array para dibujar
         //EL primer marcador no se guarda en coordinates
         if (id2 <= 2) {
             this.setState({
-                coordinates: [{
-                    coordinate: e.nativeEvent.coordinate,
-                    key: id2++,
-                    color: randomColor()
+                coordinates: [
+                    ...this.state.coordinates,
+                    {
+                    latitude: e.nativeEvent.coordinate.latitude,
+                    longitude: e.nativeEvent.coordinate.longitude,
                 }]
             })
             console.log(this.state.coordinates.length);
@@ -90,10 +92,10 @@ class MapaScreen extends React.Component {
                     {/* Manera de invocar esto con solo dos coordenadas */}
 
 
-                    {this.state.coordinates.length >=3 && (
+                    {this.state.coordinates.length >=2 && (
                         <MapViewDirections
-                            origin={this.state.coordinates[1]}
-                            destination={this.state.coordinates[2]}
+                            origin={this.state.coordinates[0]}
+                            destination={this.state.coordinates[1]}
                             apikey={GOOGLE_MAPS_APIKEY}
                             strokeWidth={4}
                         />
