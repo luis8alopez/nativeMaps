@@ -5,6 +5,7 @@ import FindMe from './components/FindMe';
 import Header from './components/Header';
 import MapaScreen from './screens/MapaScreen';
 import HomeScreen from './screens/HomeScreen';
+import LoginScreen from './components/Login';
 
 import { withAuthenticator } from 'aws-amplify-react-native';
 import Amplify from '@aws-amplify/core';
@@ -12,12 +13,7 @@ import config from './aws-exports';
 Amplify.configure(config);
 
 export default function App() {
-  state ={
-    vista: 0,
-    loc:'',
-    long:0,
-    lat:0
-  }  
+  
   const [vista, setVista] = useState(0);
   const [loc, setLoc] = useState();
   const [long, setLong] = useState(0);
@@ -42,6 +38,7 @@ export default function App() {
 
 
   let ventana = <HomeScreen/>
+  //let ventana = <LoginScreen/>
 
   if(vista===0){
     ventana = <HomeScreen onVista={vistaHandler}/>
@@ -51,6 +48,9 @@ export default function App() {
   }
   if(vista ===2){
     ventana = <FindMe onGetLoc={locationHandler} onGetLong={longHandler} onGetLat={latHandler} onVista={vistaHandler}/>
+  }
+  if(vista ===3){
+    ventana = <LoginScreen onVista={vistaHandler}/>
   }
   
     return (

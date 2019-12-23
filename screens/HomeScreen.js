@@ -9,6 +9,10 @@ const HomeScreen = props => {
         props.onVista(2);
     }
 
+    changeToo = () => {
+        props.onVista(3);
+    }
+    
     return (
         <View style={styles.screen}>
 
@@ -23,6 +27,9 @@ const HomeScreen = props => {
                 <Button style={styles.button} title="Log" onPress={change} />
                 <View style={styles.log}>
                     <Button style={styles.goo} title="With Google" onPress={() => Auth.federatedSignIn({provider:"Google"})}/>
+                </View>
+                <View style={styles.log}>
+                    <Button style={styles.goo} title="With Google View" onPress={changeToo}/>
                 </View>
             </View>
         </View>

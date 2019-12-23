@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "325384024446",
+    "firebase_url": "https://refunding-udea.firebaseio.com",
+    "project_id": "refunding-udea",
+    "storage_bucket": "refunding-udea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325384024446:android:c1dc2b8b637804c5fbc32f",
+        "android_client_info": {
+          "package_name": "com.udea.expo.googlesignin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325384024446-brnogdubg3fp6sfplabjb28jrv52v061.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_uDGDYJ-tUYZYp6E3QiIHASrIutIFFZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325384024446-brnogdubg3fp6sfplabjb28jrv52v061.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

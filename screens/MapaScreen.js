@@ -1,8 +1,14 @@
 import React from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Polyline } from 'react-native-maps';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { Marker } from 'react-native-maps';
+import MapViewDirections from "react-native-maps-directions";
 let id = 0;
+let id2 = 0;
+const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
+
+const origin = { latitude: 6.305207886096956, longitude: -75.57984955608845 };
+const destination = { latitude: 6.297844385279165, longitude: -75.58064114302397 };
 
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0912;
@@ -14,7 +20,7 @@ function randomColor() {
 }
 
 class MapaScreen extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -26,6 +32,7 @@ class MapaScreen extends React.Component {
                 longitudeDelta: LONGITUDE_DELTA,
             },
             markers: [],
+            coordinates: [],
         };
     }
 
@@ -41,6 +48,23 @@ class MapaScreen extends React.Component {
             ],
         });
         console.log(e.nativeEvent.coordinate);
+        // Error acá
+        //Necesitamos solo 2 marcadores en el array para dibujar
+        //EL primer marcador no se guarda en coordinates
+        if (id2 <= 2) {
+            this.setState({
+                coordinates: [{
+                    coordinate: e.nativeEvent.coordinate,
+                    key: id2++,
+                    color: randomColor()
+                }]
+            })
+            console.log(this.state.coordinates.length);
+            console.log(this.state.coordinates[0]);
+        } else {
+            console.log(this.state.coordinates.length);
+            console.log("There is already two markers to draw");
+        }
     }
 
     render() {
@@ -63,6 +87,25 @@ class MapaScreen extends React.Component {
                             pinColor={marker.color}
                         />
                     ))}
+                    {/* Manera de invocar esto con solo dos coordenadas */}
+
+
+                    {this.state.coordinates.length >=3 && (
+                        <MapViewDirections
+                            origin={this.state.coordinates[1]}
+                            destination={this.state.coordinates[2]}
+                            apikey={GOOGLE_MAPS_APIKEY}
+                            strokeWidth={4}
+                        />
+                    )}
+
+                    {/* <MapViewDirections
+                        origin={origin}
+                        destination={destination}
+                        apikey={GOOGLE_MAPS_APIKEY}
+                        strokeWidth={4}
+                    /> */}
+
                 </MapView>
             </View>
         );

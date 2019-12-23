@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>325384024446-vsr0ehu8in8b7h0ijfrhgjdkg4u67fk3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.325384024446-vsr0ehu8in8b7h0ijfrhgjdkg4u67fk3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCfVv7i9e1btOMRtCa5mNrE3fyzY2YG6s0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>325384024446</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.udea.expo.googlesigninios</string>
+	<key>PROJECT_ID</key>
+	<string>refunding-udea</string>
+	<key>STORAGE_BUCKET</key>
+	<string>refunding-udea.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:325384024446:ios:500b4e074b089d14fbc32f</string>
+	<key>DATABASE_URL</key>
+	<string>https://refunding-udea.firebaseio.com</string>
+</dict>
+</plist>
