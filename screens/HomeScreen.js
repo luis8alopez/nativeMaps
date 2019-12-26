@@ -25,12 +25,12 @@ const HomeScreen = props => {
                 <TextInput style={styles.text} underlineColorAndroid='grey' placeholder=' Enter user'></TextInput>
                 <TextInput style={styles.text} underlineColorAndroid='grey' placeholder=' Enter pass'></TextInput>
                 <Button style={styles.button} title="Log" onPress={change} />
-                <View style={styles.log}>
+                {/* <View style={styles.log}>
                     <Button style={styles.goo} title="With Google" onPress={() => Auth.federatedSignIn({provider:"Google"})}/>
                 </View>
                 <View style={styles.log}>
                     <Button style={styles.goo} title="With Google View" onPress={changeToo}/>
-                </View>
+                </View> */}
             </View>
         </View>
     );

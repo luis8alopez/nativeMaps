@@ -4,12 +4,12 @@ import { StyleSheet, View, Dimensions } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 let id = 0;
-let id2 = 0;
+let flag;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
 
 //Fixed map coordinates
-const origin = { latitude: 6.305207886096956, longitude: -75.57984955608845 };
-const destination = { latitude: 6.297844385279165, longitude: -75.58064114302397 };
+//const origin = { latitude: 6.305207886096956, longitude: -75.57984955608845 };
+//const destination = { latitude: 6.297844385279165, longitude: -75.58064114302397 };
 
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0912;
@@ -34,6 +34,8 @@ class MapaScreen extends React.Component {
             },
             markers: [],
             coordinates: [],
+            origin:{ latitude: 6.305207886096956, longitude: -75.57984955608845 },
+            destination:{ latitude: 6.305207886096956, longitude: -75.57984955608845 }
         };
     }
 
@@ -44,28 +46,24 @@ class MapaScreen extends React.Component {
                     ...this.state.markers,
                     {
                         coordinate: e.nativeEvent.coordinate,
+                        latitude: e.nativeEvent.coordinate.latitude,
+                        longitude: e.nativeEvent.coordinate.longitude,
                         key: id++,
                         color: randomColor(),
                     },
                 ],
             });
-        }else{
+            if(this.state.markers.length==0){
+                this.setState({origin: e.nativeEvent.coordinate})
+            }else{
+                console.log("Do i get in here?");
+                this.setState({destination: e.nativeEvent.coordinate })
+            }
+        } else {
             console.log("There is already two markers, we don't allow more");
         }
         console.log(e.nativeEvent.coordinate);
 
-        if (id2 <= 2) {
-            this.setState({
-                coordinates: [
-                    ...this.state.coordinates,
-                    {
-                        latitude: e.nativeEvent.coordinate.latitude,
-                        longitude: e.nativeEvent.coordinate.longitude,
-                    }]
-            })
-        } else {
-            console.log("There is already two markers to draw");
-        }
     }
 
     render() {
@@ -80,32 +78,32 @@ class MapaScreen extends React.Component {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }} >
-                    {/* Manera de solo pintar los dos primeros marcadores y hacerlos draggable */}
-                    {this.state.markers.map(marker => (
-                        <Marker
-                            key={marker.key}
-                            coordinate={marker.coordinate}
-                            pinColor={marker.color}
-                        />
-                    ))}
-                    {/* Manera de invocar esto con solo dos coordenadas */}
+                    
+                    {this.state.markers.length > 0  && (
+                        <Marker draggable
+                            coordinate={this.state.origin}
+                            onDragEnd={(e) => this.setState({ origin: e.nativeEvent.coordinate })}
+                            pinColor={"black"}
+                        />                    
+                    )}
 
+                    {/* destination */}
+                    {this.state.markers.length > 1 && (
+                        <Marker draggable
+                            coordinate={this.state.destination}
+                            onDragEnd={(e) => this.setState({ destination: e.nativeEvent.coordinate })}
+                            pinColor={"black"}
+                        />                    
+                    )}
 
-                    {this.state.coordinates.length >= 2 && (
+                    {this.state.markers.length >= 2 && (
                         <MapViewDirections
-                            origin={this.state.coordinates[0]}
-                            destination={this.state.coordinates[1]}
+                            origin={this.state.origin}
+                            destination={this.state.destination}
                             apikey={GOOGLE_MAPS_APIKEY}
                             strokeWidth={4}
                         />
                     )}
-
-                    {/* <MapViewDirections
-                        origin={origin}
-                        destination={destination}
-                        apikey={GOOGLE_MAPS_APIKEY}
-                        strokeWidth={4}
-                    /> */}
 
                 </MapView>
             </View>
