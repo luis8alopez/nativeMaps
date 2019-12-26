@@ -7,6 +7,7 @@ let id = 0;
 let id2 = 0;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
 
+//Fixed map coordinates
 const origin = { latitude: 6.305207886096956, longitude: -75.57984955608845 };
 const destination = { latitude: 6.297844385279165, longitude: -75.58064114302397 };
 
@@ -37,34 +38,32 @@ class MapaScreen extends React.Component {
     }
 
     onMapPress(e) {
-        this.setState({
-            markers: [
-                ...this.state.markers,
-                {
-                    coordinate: e.nativeEvent.coordinate,
-                    key: id++,
-                    color: randomColor(),
-                },
-            ],
-        });
+        if (id <= 1) {
+            this.setState({
+                markers: [
+                    ...this.state.markers,
+                    {
+                        coordinate: e.nativeEvent.coordinate,
+                        key: id++,
+                        color: randomColor(),
+                    },
+                ],
+            });
+        }else{
+            console.log("There is already two markers, we don't allow more");
+        }
         console.log(e.nativeEvent.coordinate);
-        console.log(this.state.markers[0],"marker 0");
-        // Error acá
-        //Necesitamos solo 2 marcadores en el array para dibujar
-        //EL primer marcador no se guarda en coordinates
+
         if (id2 <= 2) {
             this.setState({
                 coordinates: [
                     ...this.state.coordinates,
                     {
-                    latitude: e.nativeEvent.coordinate.latitude,
-                    longitude: e.nativeEvent.coordinate.longitude,
-                }]
+                        latitude: e.nativeEvent.coordinate.latitude,
+                        longitude: e.nativeEvent.coordinate.longitude,
+                    }]
             })
-            console.log(this.state.coordinates.length);
-            console.log(this.state.coordinates[0]);
         } else {
-            console.log(this.state.coordinates.length);
             console.log("There is already two markers to draw");
         }
     }
@@ -81,7 +80,7 @@ class MapaScreen extends React.Component {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }} >
-
+                    {/* Manera de solo pintar los dos primeros marcadores y hacerlos draggable */}
                     {this.state.markers.map(marker => (
                         <Marker
                             key={marker.key}
@@ -92,7 +91,7 @@ class MapaScreen extends React.Component {
                     {/* Manera de invocar esto con solo dos coordenadas */}
 
 
-                    {this.state.coordinates.length >=2 && (
+                    {this.state.coordinates.length >= 2 && (
                         <MapViewDirections
                             origin={this.state.coordinates[0]}
                             destination={this.state.coordinates[1]}
