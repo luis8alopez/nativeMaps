@@ -6,6 +6,7 @@ import Header from './components/Header';
 import MapaScreen from './screens/MapaScreen';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './components/Login';
+import PlacesScreen from './screens/Places';
 
 import { withAuthenticator } from 'aws-amplify-react-native';
 import Amplify from '@aws-amplify/core';
@@ -39,6 +40,7 @@ export default function App() {
 
   let ventana = <HomeScreen/>
   //let ventana = <LoginScreen/>
+  //let ventana = <PlacesScreen/>  
 
   if(vista===0){
     ventana = <HomeScreen onVista={vistaHandler}/>
@@ -52,10 +54,13 @@ export default function App() {
   if(vista ===3){
     ventana = <LoginScreen onVista={vistaHandler}/>
   }
+  if(vista ===4){
+    ventana = <PlacesScreen/>
+  }
   
     return (
       <View style={styles.container}>
-        <Header title="Native Maps"/>
+        <Header title="Native Maps"/> 
         {ventana}
       </View>
     );

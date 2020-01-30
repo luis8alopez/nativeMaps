@@ -1,8 +1,13 @@
 import React from 'react';
 import MapView, { Polyline } from 'react-native-maps';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, Button } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
+import PlacesScreen from './Places';
+import Card from '../components/Card';
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import axios from 'axios';
+
 let id = 0;
 let flag;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
@@ -14,11 +19,16 @@ const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0912;
 
+// const homePlace = { description: 'Home', geometry: { location: { lat: 6.305207886096956, lng: -75.57984955608845 } }};
+// const workPlace = { description: 'Work', geometry: { location: { lat: 6.297844385279165, lng: -75.58064114302397 } }};
+
 function randomColor() {
     return `#${Math.floor(Math.random() * 16777215)
         .toString(16)
         .padStart(6, 0)}`;
 }
+
+
 
 class MapaScreen extends React.Component {
 
@@ -34,8 +44,9 @@ class MapaScreen extends React.Component {
             },
             markers: [],
             coordinates: [],
-            origin:{ latitude: 6.305207886096956, longitude: -75.57984955608845 },
-            destination:{ latitude: 6.305207886096956, longitude: -75.57984955608845 }
+            origin: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
+            destination: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
+            show: false
         };
     }
 
@@ -53,11 +64,10 @@ class MapaScreen extends React.Component {
                     },
                 ],
             });
-            if(this.state.markers.length==0){
-                this.setState({origin: e.nativeEvent.coordinate})
-            }else{
-                console.log("Do i get in here?");
-                this.setState({destination: e.nativeEvent.coordinate })
+            if (this.state.markers.length == 0) {
+                this.setState({ origin: e.nativeEvent.coordinate })
+            } else {
+                this.setState({ destination: e.nativeEvent.coordinate })
             }
         } else {
             console.log("There is already two markers, we don't allow more");
@@ -66,25 +76,35 @@ class MapaScreen extends React.Component {
 
     }
 
+    async getPrice(origin, destination) {
+        console.log("Origen que entra: ", origin);
+            await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
+            .then((response) => console.log(response.data.data[0].legs[0].distance.text))//Añadir a un state y mostrar en mapview
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <MapView style={styles.mapStyle}
                     showsUserLocation
                     onPress={e => this.onMapPress(e)}
+                    onLongPress={t => this.getPrice(this.state.origin.latitude+","+this.state.origin.longitude, this.state.destination.latitude+","+this.state.destination.longitude)}
                     initialRegion={{
                         latitude: this.props.onLat,
                         longitude: this.props.onLon,
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }} >
-                    
-                    {this.state.markers.length > 0  && (
+
+                    {this.state.markers.length > 0 && (
                         <Marker draggable
                             coordinate={this.state.origin}
                             onDragEnd={(e) => this.setState({ origin: e.nativeEvent.coordinate })}
                             pinColor={"black"}
-                        />                    
+                        />
                     )}
 
                     {/* destination */}
@@ -93,7 +113,7 @@ class MapaScreen extends React.Component {
                             coordinate={this.state.destination}
                             onDragEnd={(e) => this.setState({ destination: e.nativeEvent.coordinate })}
                             pinColor={"black"}
-                        />                    
+                        />
                     )}
 
                     {this.state.markers.length >= 2 && (
@@ -104,7 +124,6 @@ class MapaScreen extends React.Component {
                             strokeWidth={4}
                         />
                     )}
-
                 </MapView>
             </View>
         );
@@ -120,10 +139,11 @@ const styles = StyleSheet.create({
     },
     mapStyle: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
+        height: '100%'//Dimensions.get('window').height,
     },
-    screen: {
-        flex: 1
+    cont: {
+        height: 200,
+        padding: 95
     }
 });
 
