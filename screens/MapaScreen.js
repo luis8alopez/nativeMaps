@@ -79,7 +79,7 @@ class MapaScreen extends React.Component {
 
     }
 
-    async getPrice(origin, destination) {
+    async getDistance(origin, destination) {
         console.log("Origen que entra: ", origin);
         await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
             .then((response) => {
@@ -92,17 +92,23 @@ class MapaScreen extends React.Component {
             });
     }
 
-    async getDistance(origin, destination) {
-        console.log("Origen que entra: ", origin);
-        await axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
-            .then((response) => {
-                console.log(response.data.data[0].legs[0].distance.text);
-                this.setState({ distance: response.data.data[0].legs[0].distance.text });
-                console.log("El estado tiene: ", this.state.distance);
-            })//Añadir a un state y mostrar en mapview
-            .catch((error) => {
-                console.error(error);
-            });
+        getPrice(distance) {
+        let aux = distance.toString();
+        distance = aux.slice(0, 4);
+        distance = parseFloat(distance);
+        // distance = parseInt(aux);
+        console.log("estoy imprimiendo lo que entra en axios: ",distance);
+        axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
+             .then((response) => {
+                 console.log(response.data);
+                 let dato = response.data.data;
+                 console.log("Response.data.data tiene: ",dato);
+                 this.setState({ price: response.data.data.toString() });
+                 console.log("El estado tiene: ", response);
+             })//Añadir a un state y mostrar en mapview
+             .catch((error) => {
+                 console.error(error);
+             });
     }
 
     render() {
@@ -111,7 +117,7 @@ class MapaScreen extends React.Component {
                 <MapView style={styles.mapStyle}
                     showsUserLocation
                     onPress={e => this.onMapPress(e)}
-                    onLongPress={t => this.getPrice(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
+                    onLongPress={t => this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
                     initialRegion={{
                         latitude: this.props.onLat,
                         longitude: this.props.onLon,
@@ -147,7 +153,7 @@ class MapaScreen extends React.Component {
                 </MapView>
                 <View style={styles.horiz}>
                     <Button title={this.state.distance} />
-                    <Button style={styles.but} title={this.state.price} />
+                    <Button onPress={o => this.getPrice(this.state.distance)} style={styles.but} title={this.state.price} />
                 </View>
             </View>
         );
@@ -171,9 +177,10 @@ const styles = StyleSheet.create({
     },
     but: {
         paddingTop: 10,
-        paddingLeft: 5
+        paddingLeft: 5,
+        justifyContent: "space-between"
     },
-    horiz:{
+    horiz: {
         flex: 1,
         flexDirection: "row"
     }
