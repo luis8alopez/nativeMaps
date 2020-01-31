@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView, { Polyline } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Button } from 'react-native';
+import { StyleSheet, View, Dimensions, Button, Text } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 import PlacesScreen from './Places';
@@ -46,7 +46,10 @@ class MapaScreen extends React.Component {
             coordinates: [],
             origin: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
             destination: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
-            show: false
+            show: false,
+            distance: "Distance",
+            price: "Price"
+
         };
     }
 
@@ -78,8 +81,25 @@ class MapaScreen extends React.Component {
 
     async getPrice(origin, destination) {
         console.log("Origen que entra: ", origin);
-            await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
-            .then((response) => console.log(response.data.data[0].legs[0].distance.text))//Añadir a un state y mostrar en mapview
+        await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
+            .then((response) => {
+                console.log(response.data.data[0].legs[0].distance.text);
+                this.setState({ distance: response.data.data[0].legs[0].distance.text });
+                console.log("El estado tiene: ", this.state.distance);
+            })//Añadir a un state y mostrar en mapview
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    async getDistance(origin, destination) {
+        console.log("Origen que entra: ", origin);
+        await axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
+            .then((response) => {
+                console.log(response.data.data[0].legs[0].distance.text);
+                this.setState({ distance: response.data.data[0].legs[0].distance.text });
+                console.log("El estado tiene: ", this.state.distance);
+            })//Añadir a un state y mostrar en mapview
             .catch((error) => {
                 console.error(error);
             });
@@ -91,7 +111,7 @@ class MapaScreen extends React.Component {
                 <MapView style={styles.mapStyle}
                     showsUserLocation
                     onPress={e => this.onMapPress(e)}
-                    onLongPress={t => this.getPrice(this.state.origin.latitude+","+this.state.origin.longitude, this.state.destination.latitude+","+this.state.destination.longitude)}
+                    onLongPress={t => this.getPrice(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
                     initialRegion={{
                         latitude: this.props.onLat,
                         longitude: this.props.onLon,
@@ -125,6 +145,10 @@ class MapaScreen extends React.Component {
                         />
                     )}
                 </MapView>
+                <View style={styles.horiz}>
+                    <Button title={this.state.distance} />
+                    <Button style={styles.but} title={this.state.price} />
+                </View>
             </View>
         );
     }
@@ -139,11 +163,19 @@ const styles = StyleSheet.create({
     },
     mapStyle: {
         width: Dimensions.get('window').width,
-        height: '100%'//Dimensions.get('window').height,
+        height: '95%'//Dimensions.get('window').height,
     },
     cont: {
         height: 200,
         padding: 95
+    },
+    but: {
+        paddingTop: 10,
+        paddingLeft: 5
+    },
+    horiz:{
+        flex: 1,
+        flexDirection: "row"
     }
 });
 
