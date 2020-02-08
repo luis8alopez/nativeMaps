@@ -1,5 +1,5 @@
 import React from 'react';
-import MapView, { Polyline } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import { StyleSheet, View, Dimensions, Button, Text } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
@@ -12,15 +12,8 @@ let id = 0;
 let flag;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
 
-//Fixed map coordinates
-//const origin = { latitude: 6.305207886096956, longitude: -75.57984955608845 };
-//const destination = { latitude: 6.297844385279165, longitude: -75.58064114302397 };
-
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0912;
-
-// const homePlace = { description: 'Home', geometry: { location: { lat: 6.305207886096956, lng: -75.57984955608845 } }};
-// const workPlace = { description: 'Work', geometry: { location: { lat: 6.297844385279165, lng: -75.58064114302397 } }};
 
 function randomColor() {
     return `#${Math.floor(Math.random() * 16777215)
@@ -33,12 +26,13 @@ function randomColor() {
 class MapaScreen extends React.Component {
 
     constructor(props) {
+
         super(props);
 
         this.state = {
             region: {
-                latitude: this.props.onLat,
-                longitude: this.props.onLon,
+                latitude: 0,
+                longitude: 0,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
             },
@@ -48,7 +42,8 @@ class MapaScreen extends React.Component {
             destination: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
             show: false,
             distance: "Distance",
-            price: "Price"
+            price: "Price",
+            mapRegion: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }
 
         };
     }
@@ -112,6 +107,8 @@ class MapaScreen extends React.Component {
     }
 
     render() {
+        const { navigation } = this.props;
+        console.log("Nav tiene: "+ this.props.navigation.getParam('latitude'));
         return (
             <View style={styles.container}>
                 <MapView style={styles.mapStyle}
@@ -119,11 +116,11 @@ class MapaScreen extends React.Component {
                     onPress={e => this.onMapPress(e)}
                     onLongPress={t => this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
                     initialRegion={{
-                        latitude: this.props.onLat,
-                        longitude: this.props.onLon,
+                        latitude: this.props.navigation.getParam('latitude'),
+                        longitude: this.state.region.longitude,
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
-                    }} >
+                    }}>
 
                     {this.state.markers.length > 0 && (
                         <Marker draggable

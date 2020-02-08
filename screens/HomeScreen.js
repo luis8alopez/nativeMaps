@@ -1,17 +1,32 @@
 import React from 'react';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
 
 import { View, StyleSheet, TextInput, Button, Image } from 'react-native';
-import { Auth, withOAuth } from 'aws-amplify'
 
+let lati;
+let longi;
 const HomeScreen = props => {
 
-    change = () => {
-        props.onVista(2);
-    }
+      findCurrentLocationAsync = async () => {
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
 
-    changeToo = () => {
-        props.onVista(3);
-    }
+        if (status !== 'granted') {
+            this.setState({
+                errorMessage: 'Permission to access location was denied'
+            });
+        }
+
+        let location = await Location.getCurrentPositionAsync({
+            accuracy: 6
+        });
+        console.log(location);
+        const lat = parseFloat(location.coords.latitude);
+        const long = parseFloat(location.coords.longitude);
+        lati = lat;
+        longi = long;       
+        console.log("hay en lat y long: "+lati+" "+longi);
+    };
     
     return (
         <View style={styles.screen}>
@@ -24,13 +39,13 @@ const HomeScreen = props => {
             <View style={styles.input}>
                 <TextInput style={styles.text} underlineColorAndroid='grey' placeholder=' Enter user'></TextInput>
                 <TextInput style={styles.text} underlineColorAndroid='grey' placeholder=' Enter pass'></TextInput>
-                <Button style={styles.button} title="Log" onPress={change} />
-                {/* <View style={styles.log}>
-                    <Button style={styles.goo} title="With Google" onPress={() => Auth.federatedSignIn({provider:"Google"})}/>
-                </View>
-                <View style={styles.log}>
-                    <Button style={styles.goo} title="With Google View" onPress={changeToo}/>
-                </View> */}
+                <Button style={styles.button} title="Log" onPress={()=> {
+                    this.findCurrentLocationAsync();
+                    props.navigation.navigate('Find',{
+                        latitude: lati,
+                        longitude: longi,
+                    });
+                }} />
             </View>
         </View>
     );

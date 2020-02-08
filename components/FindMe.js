@@ -13,22 +13,6 @@ const FindMe = props => {
     };
     const [location, setLocation] = useState('');
 
-
-    findCurrentLocation = () => {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                const latitude = JSON.stringify(position.coords.latitude);
-                const longitude = JSON.stringify(position.coords.longitude);
-
-                this.setState({
-                    latitude,
-                    longitude
-                });
-            },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        );
-    };
-
     findCurrentLocationAsync = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
 
@@ -41,8 +25,8 @@ const FindMe = props => {
         let location = await Location.getCurrentPositionAsync({
             accuracy: 6
         });
-        setLocation({ location });
-        props.onGetLoc(location);
+        //Problema acá, no muestra los parámetros pasados por el nav
+        console.log("A ver si pasan params: "+ props.navigation.state.params.latitude);
     };
 
 
@@ -50,15 +34,21 @@ const FindMe = props => {
     if (this.state.errorMessage) {
         text = location;
     } else if (location) {
-        props.onGetLong(location.location.coords.longitude);
-        props.onGetLat(location.location.coords.latitude);
+        () => {
+            // props.onGetLong(location.location.coords.longitude);
+            // props.onGetLat(location.location.coords.latitude);
+        }
+        
         text = JSON.stringify(location);
-        props.onVista(1);
     }
+    
     return (
         <View style={styles.why}>
             <Card style={styles.card}>
-                <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
+                <Button style={styles.button} title="Localízame en el mapa" onPress={this.findCurrentLocationAsync} />
+                <Button style={styles.button} title="Vamos al mapa" onPress={() => {
+                    props.navigation.navigate('Map')
+                }} />
             </Card>
             <Text>{text}</Text>
         </View>
@@ -69,7 +59,9 @@ const FindMe = props => {
 const styles = StyleSheet.create({
     why: {
         flex: 1,
-        marginVertical: 220
+        justifyContent: 'center',
+        alignItems: 'center'
+
     },
     container: {
         flex: 1,
@@ -89,7 +81,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#B4E1FF'
     },
     button: {
-        color:'#F7ECE1'
+        color:'#F7ECE1',
+        paddingTop: 10
     }
 });
 
