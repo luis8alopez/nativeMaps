@@ -1,17 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   View,
   KeyboardAvoidingView,
   StyleSheet,
-  Button
+  Button,
+  TextInput,
+  Text
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import Input from '../components/UI/Input';
 import Card from '../components/UI/Card';
+import axios from 'axios';
 
 const AuthScreen = props => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  signUpHandler = async (email, password) => {
+
+    console.log("Lo que hay en email y password es: " + email + " " + password);
+
+    // const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8'
+    // , {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     email:email,
+    //     password:password,
+    //     returnSecureToken: true
+    //   })
+
+    // });
+    await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8', 
+    {
+      email: email,
+      password: password,
+      returnSecureToken: true
+    })
+      .then((response) => {
+
+        if (!response.ok){
+          console.log("Something went wrong");
+        }else{
+          console.log(response);
+        }          
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    //Problema en el response? o directamente en el request
+    if (!response.ok) {
+      console.log("Something went wrong");
+    } else {
+      const responseData = await response.json();
+      console.log('The response was: ' + response);
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -21,36 +71,33 @@ const AuthScreen = props => {
       <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView>
-            <Input
-              id="email"
-              label="E-Mail"
-              keyboardType="email-address"
-              required
-              email
-              autoCapitalize="none"
-              errorMessage="Please enter a valid email address."
-              onInputChange={() => {}}
-              initialValue=""
-            />
-            <Input
-              id="password"
-              label="Password"
-              keyboardType="default"
-              secureTextEntry
-              required
-              minLength={5}
-              autoCapitalize="none"
-              errorMessage="Please enter a valid password."
-              onInputChange={() => {}}
-              initialValue=""
-            />
+
+            <Text>Email</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={(email) => setEmail(email)}
+              value={email}
+            ></TextInput>
+
+            <Text>Password</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={(password) => setPassword(password)}
+              value={password}
+            ></TextInput>
+
             <View style={styles.buttonContainer}>
-              <Button title="Login" onPress={() => {}} />
+              <Button title="Login" onPress={() => { //NO se puede enviar el parámetro
+                signUpHandler(email, password)
+              }} />
             </View>
+
+            <Text>{email}</Text>
+
             <View style={styles.buttonContainer}>
               <Button
                 title="Switch to Sign Up"
-                onPress={() => {}}
+                onPress={() => { }}
               />
             </View>
           </ScrollView>
@@ -64,6 +111,8 @@ const AuthScreen = props => {
 //   headerTitle: 'Authenticate'
 // };
 
+//Request post https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1
@@ -74,13 +123,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   authContainer: {
-    width: '80%',
-    maxWidth: 400,
+    width: '100%',
+    maxWidth: 600,
     maxHeight: 400,
     padding: 20
   },
   buttonContainer: {
     marginTop: 10
+  },
+  input: {
+    borderColor: 'gray',
+    width: '100%',
+    flex: 1,
+    marginTop: 10,
+    marginBottom: 10,
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1
   }
 });
 
