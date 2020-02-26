@@ -20,46 +20,14 @@ const AuthScreen = props => {
 
   signUpHandler = async (email, password) => {
 
-    console.log("Lo que hay en email y password es: " + email + " " + password);
-
-    // const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8'
-    // , {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({
-    //     email:email,
-    //     password:password,
-    //     returnSecureToken: true
-    //   })
-
-    // });
-    await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8', 
-    {
-      email: email,
-      password: password,
-      returnSecureToken: true
-    })
-      .then((response) => {
-
-        if (!response.ok){
-          console.log("Something went wrong");
-        }else{
-          console.log(response);
-        }          
-      })
-      .catch((error) => {
-        console.error(error);
+    const respuesta = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
+      {
+        email: email,
+        password: password,
+        returnSecureToken: true
       });
-
-    //Problema en el response? o directamente en el request
-    if (!response.ok) {
-      console.log("Something went wrong");
-    } else {
-      const responseData = await response.json();
-      console.log('The response was: ' + response);
-    }
+    res = respuesta.data;
+    console.log(JSON.stringify(respuesta.data.idToken));
   }
 
   return (
@@ -87,16 +55,14 @@ const AuthScreen = props => {
             ></TextInput>
 
             <View style={styles.buttonContainer}>
-              <Button title="Login" onPress={() => { //NO se puede enviar el parámetro
+              <Button title="Create Account" onPress={() => {
                 signUpHandler(email, password)
               }} />
             </View>
 
-            <Text>{email}</Text>
-
             <View style={styles.buttonContainer}>
               <Button
-                title="Switch to Sign Up"
+                title="Switch to Login"
                 onPress={() => { }}
               />
             </View>
