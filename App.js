@@ -6,8 +6,7 @@ import { reducer } from './Reducers/reducer';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from 'react-navigation-stack'
-import {createAppContainer} from 'react-navigation';
-
+import { createAppContainer } from 'react-navigation';
 
 import MapaScreen from './screens/MapaScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -17,11 +16,12 @@ import AuthScreen from './screens/AuthScreen';
 import StartUpScreen from './screens/StartUpScreen';
 
 const store = createStore(reducer);
+
 const Stack = createStackNavigator({
   StartUp: StartUpScreen,
   Auth: AuthScreen,
   Map: MapaScreen,
-  Home: HomeScreen, 
+  Home: HomeScreen,
   Login: LoginScreen,
   Find: FindMe
 });
@@ -29,12 +29,12 @@ const Stack = createStackNavigator({
 const AppContainer = createAppContainer(Stack);
 
 
-export default function App() {
+export default function App(props) {
 
   return (
     <NavigationContainer>
       <Provider store={store}>
-            <AppContainer/>
+        <AppContainer />
       </Provider>
     </NavigationContainer>
   );

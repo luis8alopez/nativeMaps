@@ -32,7 +32,18 @@ const AuthScreen = props => {
                 console.error(error);
             });
         console.log(JSON.stringify(respuesta.data.idToken));
-        props.navigation.navigate("Map");
+
+        const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
+        saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
+
+        saveData = (token, userId, expiration) => {
+            AsyncStorage.setItem('userData', JSON.stringify({
+                token: token,
+                userId: userId,
+                expiration: expiration.toISOString()
+            }))
+        }
+        props.navigation.navigate("Find");
     }
 
     return (
@@ -68,7 +79,7 @@ const AuthScreen = props => {
                         <View style={styles.buttonContainer}>
                             <Button
                                 title="Switch to Create Account"
-                                onPress={() => { }}
+                                onPress={() => { props.navigation.navigate("Auth") }}
                             />
                         </View>
                     </ScrollView>

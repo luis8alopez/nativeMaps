@@ -19,7 +19,7 @@ export const reducer = (state, action) => {
 
     if(action == "authenticate"){
         return {
-            ...state,
+         
             token: action.payload.token,
             userId: action.payload.userId,
             expirationDate: action.payload.expirationDate

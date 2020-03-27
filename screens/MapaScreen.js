@@ -28,20 +28,13 @@ function randomColor() {
         .padStart(6, 0)}`;
 }
 
-
-
 class MapaScreen extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            // region: {
-            //     latitude: this.props.onLat,
-            //     longitude: this.props.onLon,
-            //     latitudeDelta: LATITUDE_DELTA,
-            //     longitudeDelta: LONGITUDE_DELTA,
-            // },
+
             markers: [],
             coordinates: [],
             origin: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
@@ -92,23 +85,23 @@ class MapaScreen extends React.Component {
             });
     }
 
-        getPrice(distance) {
+    getPrice(distance) {
         let aux = distance.toString();
         distance = aux.slice(0, 4);
         distance = parseFloat(distance);
         // distance = parseInt(aux);
-        console.log("estoy imprimiendo lo que entra en axios: ",distance);
+        console.log("estoy imprimiendo lo que entra en axios: ", distance);
         axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
-             .then((response) => {
-                 console.log(response.data);
-                 let dato = response.data.data;
-                 console.log("Response.data.data tiene: ",dato);
-                 this.setState({ price: response.data.data.toString() });
-                 console.log("El estado tiene: ", response);
-             })//Añadir a un state y mostrar en mapview
-             .catch((error) => {
-                 console.error(error);
-             });
+            .then((response) => {
+                console.log(response.data);
+                let dato = response.data.data;
+                console.log("Response.data.data tiene: ", dato);
+                this.setState({ price: response.data.data.toString() });
+                console.log("El estado tiene: ", response);
+            })//Añadir a un state y mostrar en mapview
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     render() {
@@ -150,9 +143,16 @@ class MapaScreen extends React.Component {
                             strokeWidth={4}
                         />
                     )}
+
+                    {/* {this.state.markers.length >= 2 && (
+                            
+                        )} */}
+
                 </MapView>
                 <View style={styles.horiz}>
                     <Button title={this.state.distance} />
+                </View>
+                <View style={styles.horizo}>
                     <Button onPress={o => this.getPrice(this.state.distance)} style={styles.but} title={this.state.price} />
                 </View>
             </View>
@@ -168,8 +168,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     mapStyle: {
-        width: Dimensions.get('window').width,
-        height: '95%'//Dimensions.get('window').height,
+        width: '100%',
+        height: '100%',
+        zIndex: -1
     },
     cont: {
         height: 200,
@@ -178,11 +179,18 @@ const styles = StyleSheet.create({
     but: {
         paddingTop: 10,
         paddingLeft: 5,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        position: 'absolute'
     },
     horiz: {
         flex: 1,
-        flexDirection: "row"
+        flexDirection: "row",
+        position: 'absolute', top: 20, left: 30
+    },
+    horizo: {
+        flex: 1,
+        flexDirection: "row",
+        position: 'absolute', top: 20, left: 130
     }
 });
 

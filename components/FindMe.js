@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import Card from './Card';
 
@@ -44,11 +45,13 @@ const FindMe = props => {
     };
 
     return (
-        <View style={styles.why}>
-            <Card style={styles.card}>
-                <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
-            </Card>
-        </View>
+        <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+            <View style={styles.why}>
+                <Card style={styles.card}>
+                    <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
+                </Card>
+            </View>
+        </LinearGradient>
     );
 
 }
@@ -70,7 +73,12 @@ const styles = StyleSheet.create({
         width: '90%',
         height: '80%',
     },
-    card:{
+    gradient: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+    card: {
         height: 200,
         width: 200,
         alignItems: 'center',
@@ -78,7 +86,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#B4E1FF'
     },
     button: {
-        color:'#F7ECE1'
+        color: '#F7ECE1'
     }
 });
 
