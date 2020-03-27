@@ -2,9 +2,6 @@ import React, {useEffect} from 'react';
 import { View, ActivityIndicator, StyleSheet, AsyncStorage } from 'react-native';
 import {useDispatch} from 'react-redux';
 
-
-
-
 const StartUpScreen = props => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -24,18 +21,14 @@ const StartUpScreen = props => {
             if(expirationDate <= new Date() || !token || !userId){
                 props.navigation.navigate('Auth');
                 return;
-            }
-            
+            }            
             //Tengo que añadir la navigation
             props.navigation.navigate("Find");
 
             dispatch({type:"authenticate", payload: {token,userId,expirationDate}});
-
         };
-        tryLogin();
-        
+        tryLogin();        
     }, []);
-
 
     return (
         <View style={styles.screen}>
@@ -43,9 +36,6 @@ const StartUpScreen = props => {
         </View>
     )
 };
-
-
-
 
 const styles = StyleSheet.create({
 

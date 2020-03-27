@@ -78,10 +78,6 @@ const AuthScreen = props => {
     );
 };
 
-// AuthScreen.navigationOptions = {
-//   headerTitle: 'Authenticate'
-// };
-
 //Request post https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
 
 const styles = StyleSheet.create({

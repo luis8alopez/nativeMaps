@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Button } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
 import Card from './Card';
 
-
 const FindMe = props => {
-    state = {
-        location: null,
-        errorMessage: null
-    };
-    const [location, setLocation] = useState('');
-
 
     findCurrentLocation = () => {
         navigator.geolocation.getCurrentPosition(
@@ -41,8 +34,6 @@ const FindMe = props => {
         let location = await Location.getCurrentPositionAsync({
             accuracy: 6
         });
-        // setLocation({ location });
-        // props.onGetLoc(location);
         console.log("Location tiene: ", location.coords.latitude);
         console.log("Location tiene: ", location.coords.longitude);
 
