@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FindMe from './components/FindMe';
-import { AppLoading } from 'expo';
-import * as Font from 'expo-font';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { reducer } from './Reducers/reducer';
