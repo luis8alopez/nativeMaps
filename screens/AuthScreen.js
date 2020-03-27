@@ -6,9 +6,11 @@ import {
   StyleSheet,
   Button,
   TextInput,
-  Text
+  Text,
+  AsyncStorage
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Card from '../components/UI/Card';
 import axios from 'axios';
@@ -17,6 +19,13 @@ const AuthScreen = props => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [idToken, setIdToken] = useState('');
+
+  // const dispatch = useDispatch();
+
+  // const { email, password, idToken } = useSelector((state) => {
+  //   return state;
+  // });
 
   signUpHandler = async (email, password) => {
 
@@ -28,6 +37,22 @@ const AuthScreen = props => {
       });
     res = respuesta.data;
     console.log(JSON.stringify(respuesta.data.idToken));
+
+    // let payload = respuesta.data.idToken;
+    // //Testing dispatch
+    // dispatch({type:"Save_token", payload: payload});
+    setIdToken(respuesta.data.idToken);
+
+    const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
+    saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
+  }
+
+  saveData = (token, userId, expiration) => {
+    AsyncStorage.setItem('userData', JSON.stringify({
+      token: token,
+      userId: userId,
+      expiration: expiration.toISOString()
+    }))
   }
 
   return (
@@ -57,13 +82,14 @@ const AuthScreen = props => {
             <View style={styles.buttonContainer}>
               <Button title="Create Account" onPress={() => {
                 signUpHandler(email, password)
+                props.navigation.navigate("Login");
               }} />
             </View>
 
             <View style={styles.buttonContainer}>
               <Button
                 title="Switch to Login"
-                onPress={() => { }}
+                onPress={() => {props.navigation.navigate("Login")}}
               />
             </View>
           </ScrollView>

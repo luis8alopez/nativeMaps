@@ -32,6 +32,7 @@ const AuthScreen = props => {
                 console.error(error);
             });
         console.log(JSON.stringify(respuesta.data.idToken));
+        props.navigation.navigate("Map");
     }
 
     return (
