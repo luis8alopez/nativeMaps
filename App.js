@@ -14,6 +14,7 @@ import LoginScreen from './screens/LoginScreen';
 import PlacesScreen from './screens/Places';
 import AuthScreen from './screens/AuthScreen';
 import StartUpScreen from './screens/StartUpScreen';
+import ResumeScreen from './screens/ResumeScreen';
 
 const store = createStore(reducer);
 
@@ -23,7 +24,8 @@ const Stack = createStackNavigator({
   Map: MapaScreen,
   Home: HomeScreen,
   Login: LoginScreen,
-  Find: FindMe
+  Find: FindMe,
+  Resume: ResumeScreen
 });
 
 const AppContainer = createAppContainer(Stack);

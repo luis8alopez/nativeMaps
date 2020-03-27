@@ -77,6 +77,7 @@ class MapaScreen extends React.Component {
         await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
             .then((response) => {
                 console.log(response.data.data[0].legs[0].distance.text);
+                this.getPrice(String(response.data.data[0].legs[0].distance.text));
                 this.setState({ distance: response.data.data[0].legs[0].distance.text });
                 console.log("El estado tiene: ", this.state.distance);
             })//Añadir a un state y mostrar en mapview
@@ -144,16 +145,19 @@ class MapaScreen extends React.Component {
                         />
                     )}
 
-                    {/* {this.state.markers.length >= 2 && (
-                            
-                        )} */}
-
                 </MapView>
                 <View style={styles.horiz}>
                     <Button title={this.state.distance} />
                 </View>
                 <View style={styles.horizo}>
-                    <Button onPress={o => this.getPrice(this.state.distance)} style={styles.but} title={this.state.price} />
+                    <Button style={styles.but} title={this.state.price} />
+                </View>
+                <View style={styles.horizon}>
+
+                <Button onPress={async () => {
+                    await this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude);
+                }} style={styles.but} title='Calculate' />
+
                 </View>
             </View>
         );
@@ -191,6 +195,11 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         position: 'absolute', top: 20, left: 130
+    },
+    horizon: {
+        flex: 1,
+        flexDirection: "row",
+        position: 'absolute', top: 20, left: 280
     }
 });
 

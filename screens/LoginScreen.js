@@ -6,7 +6,8 @@ import {
     StyleSheet,
     Button,
     TextInput,
-    Text
+    Text,
+    AsyncStorage
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -31,10 +32,7 @@ const AuthScreen = props => {
             .catch((error) => {
                 console.error(error);
             });
-        console.log(JSON.stringify(respuesta.data.idToken));
-
-        const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
-        saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
+        console.log(JSON.stringify(respuesta.data.idToken));        
 
         saveData = (token, userId, expiration) => {
             AsyncStorage.setItem('userData', JSON.stringify({
@@ -42,7 +40,10 @@ const AuthScreen = props => {
                 userId: userId,
                 expiration: expiration.toISOString()
             }))
-        }
+        };
+
+        const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
+        saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
         props.navigation.navigate("Find");
     }
 
