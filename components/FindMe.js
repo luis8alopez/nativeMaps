@@ -41,26 +41,22 @@ const FindMe = props => {
         let location = await Location.getCurrentPositionAsync({
             accuracy: 6
         });
-        setLocation({ location });
-        props.onGetLoc(location);
+        // setLocation({ location });
+        // props.onGetLoc(location);
+        console.log("Location tiene: ", location.coords.latitude);
+        console.log("Location tiene: ", location.coords.longitude);
+
+        await props.navigation.navigate("Map", {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude
+        });
     };
 
-
-    let text = '';
-    if (this.state.errorMessage) {
-        text = location;
-    } else if (location) {
-        props.onGetLong(location.location.coords.longitude);
-        props.onGetLat(location.location.coords.latitude);
-        text = JSON.stringify(location);
-        props.onVista(1);
-    }
     return (
         <View style={styles.why}>
             <Card style={styles.card}>
                 <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
             </Card>
-            <Text>{text}</Text>
         </View>
     );
 
@@ -69,7 +65,9 @@ const FindMe = props => {
 const styles = StyleSheet.create({
     why: {
         flex: 1,
-        marginVertical: 220
+        marginVertical: 220,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     container: {
         flex: 1,

@@ -34,7 +34,8 @@ const Stack = createStackNavigator({
   Auth: AuthScreen,
   Map: MapaScreen,
   Home: HomeScreen, 
-  Login: LoginScreen
+  Login: LoginScreen,
+  Find: FindMe
 });
 
 const AppContainer = createAppContainer(Stack);

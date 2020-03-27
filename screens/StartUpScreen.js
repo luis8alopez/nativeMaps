@@ -27,7 +27,7 @@ const StartUpScreen = props => {
             }
             
             //Tengo que añadir la navigation
-            props.navigation.navigate("Map");
+            props.navigation.navigate("Find");
 
             dispatch({type:"authenticate", payload: {token,userId,expirationDate}});
 

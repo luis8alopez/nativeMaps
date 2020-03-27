@@ -36,12 +36,12 @@ class MapaScreen extends React.Component {
         super(props);
 
         this.state = {
-            region: {
-                latitude: this.props.onLat,
-                longitude: this.props.onLon,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-            },
+            // region: {
+            //     latitude: this.props.onLat,
+            //     longitude: this.props.onLon,
+            //     latitudeDelta: LATITUDE_DELTA,
+            //     longitudeDelta: LONGITUDE_DELTA,
+            // },
             markers: [],
             coordinates: [],
             origin: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
@@ -119,8 +119,8 @@ class MapaScreen extends React.Component {
                     onPress={e => this.onMapPress(e)}
                     onLongPress={t => this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
                     initialRegion={{
-                        latitude: this.props.onLat,
-                        longitude: this.props.onLon,
+                        latitude: this.props.navigation.getParam('latitude'),
+                        longitude: this.props.navigation.getParam('longitude'),
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }} >
