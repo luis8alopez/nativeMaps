@@ -7,7 +7,8 @@ import {
   Button,
   TextInput,
   Text,
-  AsyncStorage
+  AsyncStorage,
+  TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,20 +38,9 @@ const AuthScreen = props => {
       });
     res = respuesta.data;
     console.log(JSON.stringify(respuesta.data.idToken));
-    
+
     setIdToken(respuesta.data.idToken);
-
-    // const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
-    // saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
   }
-
-  // saveData = (token, userId, expiration) => {
-  //   AsyncStorage.setItem('userData', JSON.stringify({
-  //     token: token,
-  //     userId: userId,
-  //     expiration: expiration.toISOString()
-  //   }))
-  // }
 
   return (
     <KeyboardAvoidingView
@@ -58,7 +48,7 @@ const AuthScreen = props => {
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
-      <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+      <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView>
 
@@ -77,17 +67,21 @@ const AuthScreen = props => {
             ></TextInput>
 
             <View style={styles.buttonContainer}>
-              <Button title="Create Account" onPress={() => {
+              <TouchableOpacity style={styles.boton} onPress={() => {
                 signUpHandler(email, password)
                 props.navigation.navigate("Login");
-              }} />
+              }} >
+                <Text style={styles.texto}>Create Account</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.buttonContainer}>
-              <Button
-                title="Switch to Login"
-                onPress={() => {props.navigation.navigate("Login")}}
-              />
+              <TouchableOpacity
+                style={styles.boton}
+                onPress={() => { props.navigation.navigate("Login") }}
+              >
+                <Text style={styles.texto}>Login</Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </Card>
@@ -112,13 +106,14 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   authContainer: {
-    width: '100%',
+    width: '80%',
     maxWidth: 600,
     maxHeight: 400,
     padding: 20
   },
   buttonContainer: {
-    marginTop: 10
+    marginTop: 10,
+    alignItems: 'center'
   },
   input: {
     borderColor: 'gray',
@@ -128,6 +123,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1
+  },
+  boton: {
+    borderRadius: 50,
+    backgroundColor: '#252073',
+    width: 120,
+    alignItems: 'center',
+    height: 40,
+    justifyContent: 'center'
+  },
+  texto: {
+    color: 'white',
+    fontSize: 15
   }
 });
 

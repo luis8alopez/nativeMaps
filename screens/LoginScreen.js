@@ -7,7 +7,8 @@ import {
     Button,
     TextInput,
     Text,
-    AsyncStorage
+    AsyncStorage,
+    TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -32,7 +33,7 @@ const AuthScreen = props => {
             .catch((error) => {
                 console.error(error);
             });
-        console.log(JSON.stringify(respuesta.data.idToken));        
+        console.log(JSON.stringify(respuesta.data.idToken));
 
         saveData = (token, userId, expiration) => {
             AsyncStorage.setItem('userData', JSON.stringify({
@@ -53,7 +54,7 @@ const AuthScreen = props => {
             keyboardVerticalOffset={50}
             style={styles.screen}
         >
-            <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+            <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
                 <Card style={styles.authContainer}>
                     <ScrollView>
 
@@ -72,16 +73,19 @@ const AuthScreen = props => {
                         ></TextInput>
 
                         <View style={styles.buttonContainer}>
-                            <Button title="Login" onPress={() => {
+                            <TouchableOpacity style={styles.boton} onPress={() => {
                                 signUpHandler(email, password)
-                            }} />
+                            }} >
+                                <Text style={styles.texto}>Login</Text>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.buttonContainer}>
-                            <Button
-                                title="Switch to Create Account"
+                            <TouchableOpacity style={styles.boton}
                                 onPress={() => { props.navigation.navigate("Auth") }}
-                            />
+                            >
+                                <Text style={styles.texto}>Create Account</Text>
+                            </TouchableOpacity>
                         </View>
                     </ScrollView>
                 </Card>
@@ -102,13 +106,14 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     authContainer: {
-        width: '100%',
+        width: '80%',
         maxWidth: 600,
         maxHeight: 400,
         padding: 20
     },
     buttonContainer: {
-        marginTop: 10
+        marginTop: 10,
+        alignItems: 'center'
     },
     input: {
         borderColor: 'gray',
@@ -118,6 +123,18 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderBottomColor: '#ccc',
         borderBottomWidth: 1
+    },
+    boton: {
+        borderRadius: 50,
+        backgroundColor: '#252073',
+        width: 120,
+        alignItems: 'center',
+        height: 40,
+        justifyContent: 'center'
+    },
+    texto: {
+        color: 'white',
+        fontSize: 15
     }
 });
 
