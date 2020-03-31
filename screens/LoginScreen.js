@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Card from '../components/UI/Card';
 import axios from 'axios';
 
-const AuthScreen = props => {
+const LoginScreen = props => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -94,6 +94,13 @@ const AuthScreen = props => {
     );
 };
 
+LoginScreen['navigationOptions'] = screenProps => ({
+    title: 'Login with your credentials',
+    headerStyle: {
+      backgroundColor: '#e7ffff', //Ajustar color bonito
+    }
+  })
+
 //Request post https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
 
 const styles = StyleSheet.create({
@@ -138,4 +145,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AuthScreen;
+export default LoginScreen;

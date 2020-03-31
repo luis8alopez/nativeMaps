@@ -45,7 +45,7 @@ const FindMe = props => {
     };
 
     return (
-        <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+        <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
             <View style={styles.why}>
                 <Card style={styles.card}>
                     <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />

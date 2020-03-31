@@ -90,6 +90,13 @@ const AuthScreen = props => {
   );
 };
 
+AuthScreen['navigationOptions'] = screenProps => ({
+  title: 'Create a new account',
+  headerStyle: {
+    backgroundColor: '#e7ffff', //Ajustar color bonito
+  }
+})
+
 // AuthScreen.navigationOptions = {
 //   headerTitle: 'Authenticate'
 // };

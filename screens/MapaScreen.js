@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView, { Polyline } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Button, Text } from 'react-native';
+import { StyleSheet, View, Dimensions, Button, Text, LogoTitle } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 import PlacesScreen from './Places';
@@ -29,6 +29,16 @@ function randomColor() {
 }
 
 class MapaScreen extends React.Component {
+
+    static navigationOptions = {
+        headerTitle: "Map",
+        headerRight: () => <Button
+            onPress={() => alert('This is a button!')}
+            title="Calculate"
+            color="black" 
+          />          
+        ,
+      };
 
     constructor(props) {
         super(props);
