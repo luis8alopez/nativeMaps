@@ -51,8 +51,8 @@ class MapaScreen extends React.Component {
 
             markers: [],
             coordinates: [],
-            origin: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
-            destination: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
+            origin: {},
+            destination: { },
             show: false,
             distance: "Distance",
             price: "Price",
@@ -60,6 +60,41 @@ class MapaScreen extends React.Component {
 
         };
     }
+
+    // From here
+    onPlaces(location) {
+        if (id <= 1) {
+            let guardo = {
+                latitude: location.lat,
+                longitude: location.lng
+            };
+            if (this.state.markers.length == 0) {
+                this.setState({ origin: guardo })
+            } else {
+                this.setState({ destination: guardo })
+            }
+
+
+            this.setState({
+
+                markers: [
+                    ...this.state.markers,
+                    {
+                        coordinate: guardo,
+                        latitude: location.lat,
+                        longitude: location.lng,
+                        key: id++,
+                        color: randomColor(),
+                    },
+                ],
+            });
+
+        } else {
+            console.log("There is already two markers, we don't allow more");
+        }
+        console.log(location);
+    }
+    //To here
 
     onMapPress(e) {
         if (id <= 1) {
@@ -84,7 +119,6 @@ class MapaScreen extends React.Component {
             console.log("There is already two markers, we don't allow more");
         }
         console.log(e.nativeEvent.coordinate);
-
     }
 
     async getDistance(origin, destination) {
@@ -151,7 +185,8 @@ class MapaScreen extends React.Component {
                         longitudeDelta: 0.0421,
                     }} >
 
-                    {this.state.markers.length > 0 && (
+                    {/* Cómo hacer para evaluar que origin no esté vacío? */}
+                    { this.state.markers.length > 0 && (
                         <Marker draggable
                             coordinate={this.state.origin}
                             onDragEnd={(e) => this.setState({ origin: e.nativeEvent.coordinate })}
@@ -207,15 +242,13 @@ class MapaScreen extends React.Component {
                         returnKeyType={'search'}
                         listViewDisplayed={false}
                         fetchDetails={true}
-                        onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                            //console.log(data);
+                        onPress={(data, details = null) => {
                             console.log(details.geometry);
-                            //console.log(details.geometry.location,"Print");
+                            this.onPlaces(details.geometry.location);
                         }}
                         query={{
-                            // available options: https://developers.google.com/places/web-service/autocomplete
                             key: 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
-                            language: 'en', // language of the results
+                            language: 'es', // language of the results
                         }}
                         styles={{
                             description: {
@@ -225,15 +258,13 @@ class MapaScreen extends React.Component {
                             textInputContainer: {
                                 backgroundColor: 'black',
                                 width: '100%',
-
                             },
                             predefinedPlacesDescription: {
                                 color: '#1faadb',
                                 width: 220
                             },
                         }}
-
-                        nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                        nearbyPlacesAPI='GooglePlacesSearch'
                         debounce={200}
                     />
 
