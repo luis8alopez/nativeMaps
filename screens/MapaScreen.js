@@ -9,6 +9,7 @@ import axios from 'axios';
 let id = 0;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
 
+
 function randomColor() {
     return `#${Math.floor(Math.random() * 16777215)
         .toString(16)
@@ -27,7 +28,7 @@ function deleteUser() {
 
 class MapaScreen extends React.Component {
 
-    static navigationOptions = ({navigate, navigation}) => ({
+    static navigationOptions = ({ navigate, navigation }) => ({
         headerTitle: "Map",
         headerRight: () => <Button
             onPress={() => {
@@ -177,11 +178,16 @@ class MapaScreen extends React.Component {
                     )}
 
                 </MapView>
+                {/* Buttons that appear when there are two markers on the map */}
                 <View style={styles.horiz}>
-                    <Button title={this.state.distance} />
+                    {this.state.markers.length >= 2 && (
+                        <Button title={this.state.distance} />
+                    )}
                 </View>
                 <View style={styles.horizo}>
-                    <Button style={styles.but} title={this.state.price} />
+                    {this.state.markers.length >= 2 && (
+                        <Button style={styles.but} title={this.state.price} />
+                    )}
                 </View>
                 <View style={styles.horizon}>
 
@@ -191,6 +197,48 @@ class MapaScreen extends React.Component {
                         }} style={styles.but} title='Calculate' />
                     )}
                 </View>
+
+                {/* Desde */}
+                <View style={styles.view}>
+                    <GooglePlacesAutocomplete
+                        placeholder='Search'
+                        minLength={2} // minimum length of text to search
+                        autoFocus={false}
+                        returnKeyType={'search'}
+                        listViewDisplayed={false}
+                        fetchDetails={true}
+                        onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                            //console.log(data);
+                            console.log(details.geometry);
+                            //console.log(details.geometry.location,"Print");
+                        }}
+                        query={{
+                            // available options: https://developers.google.com/places/web-service/autocomplete
+                            key: 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
+                            language: 'en', // language of the results
+                        }}
+                        styles={{
+                            description: {
+                                fontWeight: 'bold',
+                                width: 220,
+                            },
+                            textInputContainer: {
+                                backgroundColor: 'black',
+                                width: '100%',
+
+                            },
+                            predefinedPlacesDescription: {
+                                color: '#1faadb',
+                                width: 220
+                            },
+                        }}
+
+                        nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                        debounce={200}
+                    />
+
+                </View>
+                {/* Hasta */}
             </View>
         );
     }
@@ -221,17 +269,25 @@ const styles = StyleSheet.create({
     horiz: {
         flex: 1,
         flexDirection: "row",
-        position: 'absolute', top: 20, left: 30
+        position: 'absolute', bottom: 20, left: 30
     },
     horizo: {
         flex: 1,
         flexDirection: "row",
-        position: 'absolute', top: 20, left: 130
+        position: 'absolute', bottom: 20, left: 130
     },
     horizon: {
         flex: 1,
         flexDirection: "row",
-        position: 'absolute', top: 20, left: 280
+        position: 'absolute', bottom: 20, left: 280
+    },
+    view: {
+        backgroundColor: 'transparent',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        height: 200,
+        width: 260,
+        position: 'absolute', top: 60
     }
 });
 
