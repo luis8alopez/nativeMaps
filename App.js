@@ -20,10 +20,10 @@ const store = createStore(reducer);
 
 const Stack = createStackNavigator({
   StartUp: StartUpScreen,
+  Login: LoginScreen,
   Auth: AuthScreen,
   Map: MapaScreen,
   Home: HomeScreen,
-  Login: LoginScreen,
   Find: FindMe,
   Resume: ResumeScreen
 });

@@ -22,6 +22,11 @@ const LoginScreen = props => {
 
     signUpHandler = async (email, password) => {
 
+        if (!email || !password) {
+            alert("Please type a valid email or password");
+            return
+        }
+
         console.log("Lo que hay en email y password es: " + email + " " + password);
 
         const respuesta = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
@@ -97,9 +102,10 @@ const LoginScreen = props => {
 LoginScreen['navigationOptions'] = screenProps => ({
     title: 'Login with your credentials',
     headerStyle: {
-      backgroundColor: '#e7ffff', //Ajustar color bonito
-    }
-  })
+        backgroundColor: '#e7ffff', //Ajustar color bonito
+    },
+    headerLeft: () => null
+})
 
 //Request post https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
 

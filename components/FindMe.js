@@ -48,13 +48,21 @@ const FindMe = props => {
         <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
             <View style={styles.why}>
                 <Card style={styles.card}>
-                    <Button style={styles.button} title="Localizar!!" onPress={this.findCurrentLocationAsync} />
+                    <Button style={styles.button} title="Find me on the map" onPress={this.findCurrentLocationAsync} />
                 </Card>
             </View>
         </LinearGradient>
     );
 
 }
+
+FindMe['navigationOptions'] = screenProps => ({
+    title: 'Allows us to Locate you',
+    headerStyle: {
+      backgroundColor: '#e7ffff', //Ajustar color bonito
+    },
+    headerLeft: () => null
+  })
 
 const styles = StyleSheet.create({
     why: {

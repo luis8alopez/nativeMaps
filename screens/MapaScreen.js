@@ -1,26 +1,13 @@
 import React from 'react';
-import MapView, { Polyline } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Button, Text, LogoTitle } from 'react-native';
+import MapView from 'react-native-maps';
+import { StyleSheet, View, Button, Text, AsyncStorage } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
-import PlacesScreen from './Places';
-import Card from '../components/Card';
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import axios from 'axios';
 
 let id = 0;
-let flag;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8';
-
-//Fixed map coordinates
-//const origin = { latitude: 6.305207886096956, longitude: -75.57984955608845 };
-//const destination = { latitude: 6.297844385279165, longitude: -75.58064114302397 };
-
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = 0.0912;
-
-// const homePlace = { description: 'Home', geometry: { location: { lat: 6.305207886096956, lng: -75.57984955608845 } }};
-// const workPlace = { description: 'Work', geometry: { location: { lat: 6.297844385279165, lng: -75.58064114302397 } }};
 
 function randomColor() {
     return `#${Math.floor(Math.random() * 16777215)
@@ -28,17 +15,33 @@ function randomColor() {
         .padStart(6, 0)}`;
 }
 
+function deleteUser() {
+    try {
+        AsyncStorage.removeItem('userData');
+        console.log("Done");
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
 class MapaScreen extends React.Component {
 
-    static navigationOptions = {
+    static navigationOptions = ({navigate, navigation}) => ({
         headerTitle: "Map",
         headerRight: () => <Button
-            onPress={() => alert('This is a button!')}
-            title="Calculate"
-            color="black" 
-          />          
+            onPress={() => {
+                deleteUser();
+                navigation.navigate("Login");
+                //console.log("La devuelta es: ")
+            }}
+            title="Sign Out"
+            color="black"
+        />
         ,
-      };
+    });
+
+
 
     constructor(props) {
         super(props);
@@ -51,7 +54,8 @@ class MapaScreen extends React.Component {
             destination: { latitude: 6.305207886096956, longitude: -75.57984955608845 },
             show: false,
             distance: "Distance",
-            price: "Price"
+            price: "Price",
+            refunds: []
 
         };
     }
@@ -83,6 +87,10 @@ class MapaScreen extends React.Component {
     }
 
     async getDistance(origin, destination) {
+        if (!origin || !destination) {
+            alert("Put two markers on the map to calculate");
+            return;
+        }
         console.log("Origen que entra: ", origin);
         await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
             .then((response) => {
@@ -100,16 +108,29 @@ class MapaScreen extends React.Component {
         let aux = distance.toString();
         distance = aux.slice(0, 4);
         distance = parseFloat(distance);
-        // distance = parseInt(aux);
         console.log("estoy imprimiendo lo que entra en axios: ", distance);
         axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
             .then((response) => {
                 console.log(response.data);
                 let dato = response.data.data;
                 console.log("Response.data.data tiene: ", dato);
+                //this.getRefund(String(response.data.data));
                 this.setState({ price: response.data.data.toString() });
-                console.log("El estado tiene: ", response);
             })//Añadir a un state y mostrar en mapview
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    getRefund(price) {  //Hace falta implementar esto visualmente
+
+        precio = parseInt(price);
+        axios.get(`https://refunding-backend.herokuapp.com/api/getRefund?price=${precio}`)
+            .then((response) => {
+                console.log(response.data);
+                this.setState({ refunds: response.data.refund });
+                console.log("Llegó hasta aquí, funcionó?");
+            })
             .catch((error) => {
                 console.error(error);
             });
@@ -164,10 +185,11 @@ class MapaScreen extends React.Component {
                 </View>
                 <View style={styles.horizon}>
 
-                <Button onPress={async () => {
-                    await this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude);
-                }} style={styles.but} title='Calculate' />
-
+                    {this.state.markers.length >= 2 && (
+                        <Button onPress={async () => {
+                            await this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude);
+                        }} style={styles.but} title='Calculate' />
+                    )}
                 </View>
             </View>
         );
