@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme":"myapp",
+    "scheme": "myapp",
     "name": "nativeMaps",
     "slug": "nativeMaps",
     "privacy": "public",
@@ -27,21 +27,25 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.udea.expo.googlesigninios",
-      "config":{
-        "googleSignIn":{
-          "reservedClientId":"com.googleusercontent.apps.325384024446-vsr0ehu8in8b7h0ijfrhgjdkg4u67fk3"
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.325384024446-vsr0ehu8in8b7h0ijfrhgjdkg4u67fk3"
         }
       }
     },
     "android": {
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
       "package": "com.udea.expo.googlesignin",
-      "googleServicesFile":"./google-services.json",
-      "config":{
-        "googleSignIn":{
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleSignIn": {
           "certificateHash": "56:B9:DB:A8:77:CE:87:7D:E9:E6:4A:C4:48:81:5B:9F:9A:21:E0:CA"
         }
       }
-		}
+    },
+    "description": "Refunding App - V 1.1.0"
   }
 }

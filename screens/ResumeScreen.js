@@ -11,6 +11,20 @@ const ResumeScreen = props => {
 
     const [distance, setDistance] = useState('Distance');
     const [price, setPrice] = useState('Price');
+    const [refund, setRefund] = useState('Refund');
+
+    getRefund = (price) => {  //Hace falta implementar esto visualmente
+
+        precio = parseInt(price);
+        axios.get(`https://refunding-backend.herokuapp.com/api/getRefund?price=${precio}`)
+            .then((response) => {
+                console.log(response.data.refund);
+                console.log("Llegó hasta aquí, funcionó?");
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     return (
         <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
@@ -20,6 +34,9 @@ const ResumeScreen = props => {
                         onPress={async () => {
                             setDistance(props.navigation.getParam('distance'));
                             setPrice(props.navigation.getParam('price'));
+                            // console.log(props.navigation.getParam('refund'));
+                            // let ret = await getRefund(parseInt(props.navigation.getParam('price')));
+                            // console.log(ret.refund.refund);
                         }}/>
                     {/* Añadir una vista bonita en la card para ver el resumen del viaje */}
                     <View style={styles.vista}>
@@ -29,7 +46,6 @@ const ResumeScreen = props => {
                     <View style={styles.vista}>
                         <Button style={styles.but} title={price} />
                     </View>
-
                 </Card>
             </View>
         </LinearGradient>

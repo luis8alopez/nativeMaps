@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, View, Button, Text, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Button, Text, AsyncStorage, Modal } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -52,11 +52,12 @@ class MapaScreen extends React.Component {
             markers: [],
             coordinates: [],
             origin: {},
-            destination: { },
+            destination: {},
             show: false,
             distance: "Distance",
             price: "Price",
-            refunds: []
+            refunds: [],
+            visible: false
 
         };
     }
@@ -157,6 +158,10 @@ class MapaScreen extends React.Component {
             });
     }
 
+    setModal(flag) {
+        this.setState({ visible: flag });
+    }
+
     getRefund(price) {  //Hace falta implementar esto visualmente
 
         precio = parseInt(price);
@@ -169,6 +174,10 @@ class MapaScreen extends React.Component {
             .catch((error) => {
                 console.error(error);
             });
+    }
+
+    switch(){
+        this.props.navigation.navigate("Resume",{price:this.state.price});
     }
 
     render() {
@@ -186,7 +195,7 @@ class MapaScreen extends React.Component {
                     }} >
 
                     {/* Cómo hacer para evaluar que origin no esté vacío? */}
-                    { this.state.markers.length > 0 && (
+                    {this.state.markers.length > 0 && (
                         <Marker draggable
                             coordinate={this.state.origin}
                             onDragEnd={(e) => this.setState({ origin: e.nativeEvent.coordinate })}
@@ -214,25 +223,16 @@ class MapaScreen extends React.Component {
 
                 </MapView>
                 {/* Buttons that appear when there are two markers on the map */}
-                <View style={styles.horiz}>
-                    {this.state.markers.length >= 2 && (
-                        <Button title={this.state.distance} />
-                    )}
-                </View>
-                <View style={styles.horizo}>
-                    {this.state.markers.length >= 2 && (
-                        <Button style={styles.but} title={this.state.price} />
-                    )}
-                </View>
                 <View style={styles.horizon}>
 
                     {this.state.markers.length >= 2 && (
                         <Button onPress={async () => {
                             await this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude);
+                            this.setModal(true);
                         }} style={styles.but} title='Calculate' />
                     )}
                 </View>
-
+                {/*End of buttons that appear*/}
                 {/* Desde */}
                 <View style={styles.view}>
                     <GooglePlacesAutocomplete
@@ -270,6 +270,34 @@ class MapaScreen extends React.Component {
 
                 </View>
                 {/* Hasta */}
+
+
+
+                {/* Modal begins */}
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={this.state.visible}
+                    onRequestClose={() => {
+                        setModal(false)
+                    }
+                    }>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalButtonView}>
+                                <Button title={this.state.distance} onPress={() => this.setModal(false)}/>                 
+                                <Button style={styles.but} title={this.state.price} onPress={() => this.setModal(false)}/>                            
+                        </View>
+
+                        <View style={{padding:10, flexDirection:'row', justifyContent:'space-around'}}>
+                            <Button title="Confirm" onPress={()=>{
+                                this.setModal(false);
+                                this.props.navigation.navigate("Resume",
+                                {price:this.state.price,
+                                distance:this.state.distance})}}/>
+                        </View>
+                    </View>
+                </Modal>
+                {/* Modal Ends */}
             </View>
         );
     }
@@ -319,6 +347,17 @@ const styles = StyleSheet.create({
         height: 200,
         width: 260,
         position: 'absolute', top: 60
+    },
+    modalContainer: {
+        position: 'absolute',
+        width: '100%',
+        backgroundColor: 'white',
+        bottom: 0
+    },
+    modalButtonView: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding:10
     }
 });
 
