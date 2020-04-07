@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ListView, Text, View, Image, StyleSheet, FlatList, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
+import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
 const styles = StyleSheet.create({
     container: {
@@ -14,7 +15,8 @@ const styles = StyleSheet.create({
         marginLeft: 20
     },
 });
-
+let arr = [];
+let hel = [];
 let data = [
     {
         id: '100000',
@@ -58,11 +60,12 @@ let data = [
 RefundScreen = props => {
 
     const [refund, setRefund] = useState([]);
+    const [flag, setFlag] = useState(false);
 
     callApi = async () => {
         //Cambiar price para que se reciba dinámicamente cuando el navigation de maps
         //Apunte a esta Screen --- Tal vez Redux?
-        return await axios('https://refunding-backend.herokuapp.com/api/getRefund?price=15000')
+        return await axios('https://refunding-backend.herokuapp.com/api/getRefund?price=18000')
             .then((response) => {
                 return response;
             })
@@ -87,10 +90,20 @@ RefundScreen = props => {
                     let jsonObj= {};
                     jsonObj["id"] = help;
                     jsonObj["quantity"] = reto.data.refund.refund[help];
+                    arr = data.filter(( obj ) => {
+                        return obj.id == help;
+                    });
+                    hel.push(arr[0]);
+                    //En primera iteración, arr tiene 10.000 pero cuando llega 5.000 se borra el 10.000
+                    console.log("cada iteración",arr);
                     //JsonObj o en su defecto --help-- tiene el id que se debería borrar en data[] para hacer el render
                     // cómo?
                 }               
             }
+            console.log(hel);
+            data=hel;
+            //console.log(data);
+            setFlag(true);
         }
         retorno();
     }, []);
