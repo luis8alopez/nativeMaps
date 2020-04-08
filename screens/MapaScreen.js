@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, View, Button, Text, AsyncStorage, Modal } from 'react-native';
+import { StyleSheet, View, Button, TouchableOpacity, AsyncStorage, Modal } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -176,8 +176,8 @@ class MapaScreen extends React.Component {
             });
     }
 
-    switch(){
-        this.props.navigation.navigate("Resume",{price:this.state.price});
+    switch() {
+        this.props.navigation.navigate("Resume", { price: this.state.price });
     }
 
     render() {
@@ -186,7 +186,6 @@ class MapaScreen extends React.Component {
                 <MapView style={styles.mapStyle}
                     showsUserLocation
                     onPress={e => this.onMapPress(e)}
-                    onLongPress={t => this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
                     initialRegion={{
                         latitude: this.props.navigation.getParam('latitude'),
                         longitude: this.props.navigation.getParam('longitude'),
@@ -282,20 +281,29 @@ class MapaScreen extends React.Component {
                         setModal(false)
                     }
                     }>
+                    <TouchableOpacity
+                        style={styles.cont}
+                        activeOpacity={1}
+                        onPressOut={() => { this.setModal(false) }}
+                    >
                     <View style={styles.modalContainer}>
                         <View style={styles.modalButtonView}>
-                                <Button title={this.state.distance} onPress={() => this.setModal(false)}/>                 
-                                <Button style={styles.but} title={this.state.price} onPress={() => this.setModal(false)}/>                            
+                            <Button title={this.state.distance} onPress={() => this.setModal(false)} />
+                            <Button style={styles.but} title={this.state.price} onPress={() => this.setModal(false)} />
                         </View>
 
-                        <View style={{padding:10, flexDirection:'row', justifyContent:'space-around'}}>
-                            <Button title="Confirm" onPress={()=>{
+                        <View style={{ padding: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <Button title="Confirm" onPress={() => {
                                 this.setModal(false);
                                 this.props.navigation.navigate("Resume",
-                                {price:this.state.price,
-                                distance:this.state.distance})}}/>
+                                    {
+                                        price: this.state.price,
+                                        distance: this.state.distance
+                                    })
+                            }} />
                         </View>
                     </View>
+                    </TouchableOpacity>
                 </Modal>
                 {/* Modal Ends */}
             </View>
@@ -357,8 +365,16 @@ const styles = StyleSheet.create({
     modalButtonView: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        padding:10
-    }
+        padding: 10
+    },
+    cont: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)'
+      }
 });
 
 export default MapaScreen;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Button, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import axios from 'axios';
 
 import Card from '../components/Card';
 
@@ -13,19 +12,6 @@ const ResumeScreen = props => {
     const [price, setPrice] = useState('Price');
     const [refund, setRefund] = useState('Refund');
 
-    getRefund = (price) => {  //Hace falta implementar esto visualmente
-
-        precio = parseInt(price);
-        axios.get(`https://refunding-backend.herokuapp.com/api/getRefund?price=${precio}`)
-            .then((response) => {
-                console.log(response.data.refund);
-                console.log("Llegó hasta aquí, funcionó?");
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
     return (
         <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
             <View style={styles.why}>
@@ -34,9 +20,6 @@ const ResumeScreen = props => {
                         onPress={async () => {
                             setDistance(props.navigation.getParam('distance'));
                             setPrice(props.navigation.getParam('price'));
-                            // console.log(props.navigation.getParam('refund'));
-                            // let ret = await getRefund(parseInt(props.navigation.getParam('price')));
-                            // console.log(ret.refund.refund);
                         }}/>
                     {/* Añadir una vista bonita en la card para ver el resumen del viaje */}
                     <View style={styles.vista}>
@@ -46,6 +29,16 @@ const ResumeScreen = props => {
                     <View style={styles.vista}>
                         <Button style={styles.but} title={price} />
                     </View>
+
+                    <View style={styles.vista}>
+                        <Button style={styles.but} title="How to pay" 
+                        onPress={()=>{
+                            props.navigation.navigate("Refund",{
+                                price: price
+                            });
+                        }}/>
+                    </View>
+
                 </Card>
             </View>
         </LinearGradient>
@@ -91,10 +84,13 @@ const styles = StyleSheet.create({
     },
     button: {
         color: '#F7ECE1',
-        marginBottom: 10
+        marginBottom: 20,
+        width: 140,
+        marginTop: 10
     },
     vista: {
-        padding: 10
+        padding: 10,
+        width: 140
     }
 });
 

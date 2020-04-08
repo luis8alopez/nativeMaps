@@ -19,9 +19,9 @@ import RefundScreen from './screens/RefundScreen';
 const store = createStore(reducer);
 
 const Stack = createStackNavigator({
-  Refund: RefundScreen,
-  Resume: ResumeScreen,
   StartUp: StartUpScreen,
+  Refund: RefundScreen,    
+  Resume: ResumeScreen,  
   Login: LoginScreen,
   Auth: AuthScreen,
   Map: MapaScreen,
