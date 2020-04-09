@@ -26,5 +26,7 @@ export const reducer = (state, action) => {
         }
     }
 
+    //https://oauth2.googleapis.com/tokeninfo?id_token= Url token to validate expirationDate 
+
     return state;
 }

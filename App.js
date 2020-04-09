@@ -15,14 +15,18 @@ import AuthScreen from './screens/AuthScreen';
 import StartUpScreen from './screens/StartUpScreen';
 import ResumeScreen from './screens/ResumeScreen';
 import RefundScreen from './screens/RefundScreen';
+import SecondLogin from './screens/SecondLogin';
+import Profile from './screens/Profile';
 
 const store = createStore(reducer);
 
 const Stack = createStackNavigator({
-  StartUp: StartUpScreen,
-  Refund: RefundScreen,    
-  Resume: ResumeScreen,  
+  StartUp: StartUpScreen, 
   Login: LoginScreen,
+  Second: SecondLogin,
+  Profile: Profile,
+  Refund: RefundScreen,       
+  Resume: ResumeScreen,  
   Auth: AuthScreen,
   Map: MapaScreen,
   Home: HomeScreen,

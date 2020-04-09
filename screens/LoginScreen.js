@@ -14,11 +14,68 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import Card from '../components/UI/Card';
 import axios from 'axios';
+import * as Google from "expo-google-app-auth";
+
+const IOS_CLIENT_ID =
+    "325384024446-vsr0ehu8in8b7h0ijfrhgjdkg4u67fk3.apps.googleusercontent.com";
+const ANDROID_CLIENT_ID =
+    "325384024446-8m3bmo46o8smilt1mcgoepevnb4vb8tg.apps.googleusercontent.com";
+
+let iat;
+let token;
+let exp;
+let expires;
 
 const LoginScreen = props => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    signInWithGoogle = async () => {
+
+        saveData = (token, userId, expiration) => {
+            AsyncStorage.setItem('userData', JSON.stringify({
+                token: token,
+                userId: userId,
+                expiration: expiration.toISOString()
+            }))
+        };
+
+
+        try {
+            const result = await Google.logInAsync({
+                iosClientId: IOS_CLIENT_ID,
+                androidClientId: ANDROID_CLIENT_ID,
+                scopes: ["profile", "email"]
+            });
+
+            if (result.type === "success") {
+                console.log("LoginScreen.js.js 21 | ", result.user.givenName);
+                //TEST
+                await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${result.idToken}`)
+                    .then((response) => {
+                        iat = response.data.iat;
+                        exp = response.data.exp;
+                    })
+
+                const expires = parseInt(exp) - parseInt(iat);
+                const expiration = new Date(new Date().getTime() + expires * 1000); //Milisegundos
+                console.log("Expiration queda guardado así: ", expiration);
+                saveData(result.idToken, result.user.id, expiration);
+                //TEST
+                props.navigation.navigate("Profile", {
+                    username: result.user.givenName,
+                    photo: result.user.photoUrl
+                }); //after Google login redirect to Profile
+                return result.accessToken;
+            } else {
+                return { cancelled: true };
+            }
+        } catch (e) {
+            console.log('LoginScreen.js.js 30 | Error with login', e);
+            return { error: true };
+        }
+    };
 
     signUpHandler = async (email, password) => {
 
@@ -38,7 +95,7 @@ const LoginScreen = props => {
             .catch((error) => {
                 console.error(error);
             });
-        console.log(JSON.stringify(respuesta.data.idToken));
+        console.log(JSON.stringify(respuesta.data.expiresIn));
 
         saveData = (token, userId, expiration) => {
             AsyncStorage.setItem('userData', JSON.stringify({
@@ -49,6 +106,7 @@ const LoginScreen = props => {
         };
 
         const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
+        console.log("Expiration queda guardado así: ", expiration);
         saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
         props.navigation.navigate("Find");
     }
@@ -67,7 +125,7 @@ const LoginScreen = props => {
                         <TextInput
                             style={styles.input}
                             onChangeText={(email) => setEmail(email)}
-                            value={email}
+                            vaSecondlue={email}
                         ></TextInput>
 
                         <Text>Password</Text>
@@ -92,6 +150,15 @@ const LoginScreen = props => {
                                 <Text style={styles.texto}>Create Account</Text>
                             </TouchableOpacity>
                         </View>
+
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.boton}
+                                onPress={this.signInWithGoogle}
+                            >
+                                <Text style={styles.texto}>Login With Google</Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </ScrollView>
                 </Card>
             </LinearGradient>
@@ -126,7 +193,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginTop: 10,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     input: {
         borderColor: 'gray',
@@ -140,7 +208,7 @@ const styles = StyleSheet.create({
     boton: {
         borderRadius: 50,
         backgroundColor: '#252073',
-        width: 120,
+        width: 190,
         alignItems: 'center',
         height: 40,
         justifyContent: 'center'

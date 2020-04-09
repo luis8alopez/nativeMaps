@@ -12,15 +12,15 @@ const ResumeScreen = props => {
     const [price, setPrice] = useState('Price');
     const [refund, setRefund] = useState('Refund');
 
+    useEffect(() => {
+        setDistance(props.navigation.getParam('distance'));
+        setPrice(props.navigation.getParam('price'));
+    }, []);
+
     return (
         <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
             <View style={styles.why}>
                 <Card style={styles.card}>
-                    <Button style={styles.button} title="Ver resumen"
-                        onPress={async () => {
-                            setDistance(props.navigation.getParam('distance'));
-                            setPrice(props.navigation.getParam('price'));
-                        }}/>
                     {/* Añadir una vista bonita en la card para ver el resumen del viaje */}
                     <View style={styles.vista}>
                         <Button style={styles.but} title={distance} />
@@ -31,12 +31,12 @@ const ResumeScreen = props => {
                     </View>
 
                     <View style={styles.vista}>
-                        <Button style={styles.but} title="How to pay" 
-                        onPress={()=>{
-                            props.navigation.navigate("Refund",{
-                                price: price
-                            });
-                        }}/>
+                        <Button style={styles.but} title="How to pay"
+                            onPress={() => {
+                                props.navigation.navigate("Refund", {
+                                    price: price
+                                });
+                            }} />
                     </View>
 
                 </Card>

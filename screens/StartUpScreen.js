@@ -8,7 +8,7 @@ const StartUpScreen = props => {
         const tryLogin = async () => {
             const userData = await AsyncStorage.getItem('userData');
             if(!userData){
-                props.navigation.navigate("Auth");
+                props.navigation.navigate("Login");
                 return;
             }
             const data = JSON.parse(userData);

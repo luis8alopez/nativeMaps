@@ -4,41 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 20,
-        alignItems: 'center'
-    },
-    img: {
-        width: 240,
-        height: 110, //Arreglar acá, así sea las imágenes de las monedas
-        padding: 10
-    },
-    imgs: {
-        width: 110,
-        height: 110, //Arreglar acá, así sea las imágenes de las monedas
-        borderRadius: 110 / 2,
-        padding: 10
-    },
-    touchable: {
-        width: 110,
-        height: 30,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 5
-    },
-    quantity: {
-        backgroundColor: 'black',
-        width: 50,
-        height: 30,
-        backgroundColor: 'gray'
-    },
-    subContainer: {
-        padding: 10
-    }
-});
+
 let arr = [];
 let hel = [];
 let copy = [];
@@ -122,6 +88,14 @@ let data = [
     },
 ];
 
+let dataOld =
+{
+    id: '100000',
+    title: 'Cienmil',
+    image: require('../assets/rsz_100000.jpg'),
+    quantity: '0',
+    identifier: 10
+};
 
 
 
@@ -138,6 +112,7 @@ RefundScreen = props => {
     callApi = async () => {
 
         let price = props.navigation.getParam('price');
+        price = 15850;
         if (!price) {
             alert("There is no price");
             return;
@@ -188,19 +163,23 @@ RefundScreen = props => {
                 keyExtractor={(item, index) => item.id}
                 renderItem={({ item }) => (
                     <View style={styles.container}>
-                        {item.identifier >= 4 && (
-                            <Image
-                                source={item.image}
+                        {item.identifier >= 4 && (  //It renders from 1000 up
+                            <TouchableOpacity style={styles.imageContainer} >
+                                <Image
+                                    source={item.image}
 
-                                style={styles.img}
-                            />)}
+                                    style={styles.img}
+                                />
+                            </TouchableOpacity>)}
 
                         {item.identifier < 4 && (
-                            <Image
-                                source={item.image}
+                            <TouchableOpacity style={styles.imageContainer} >
+                                <Image
+                                    source={item.image}
 
-                                style={styles.imgs}
-                            />)}
+                                    style={styles.imgs}
+                                />
+                            </TouchableOpacity>)}
 
                         <View style={styles.subContainer}>
                             <TouchableOpacity style={styles.touchable} >
@@ -217,5 +196,45 @@ RefundScreen = props => {
         </LinearGradient>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: 20,
+        alignItems: 'center'
+    },
+    img: {
+        width: 240,
+        height: 110, //Arreglar acá, así sea las imágenes de las monedas
+        padding: 10,
+        borderColor: 'black'
+    },
+    imgs: {
+        width: 110,
+        height: 110, //Arreglar acá, así sea las imágenes de las monedas
+        borderRadius: 110 / 2,
+        padding: 10
+    },
+    touchable: {
+        width: 110,
+        height: 30,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5
+    },
+    quantity: {
+        backgroundColor: 'black',
+        width: 50,
+        height: 30,
+        backgroundColor: 'gray'
+    },
+    subContainer: {
+        padding: 10
+    },
+    imageContainer: {
+        padding: 10
+    }
+});
 
 export default RefundScreen;
