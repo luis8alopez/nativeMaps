@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, Image, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
+import { Card } from 'react-native-shadow-cards';
+
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
 
@@ -164,31 +166,30 @@ RefundScreen = props => {
                 renderItem={({ item }) => (
                     <View style={styles.container}>
                         {item.identifier >= 4 && (  //It renders from 1000 up
-                            <TouchableOpacity style={styles.imageContainer} >
-                                <Image
-                                    source={item.image}
+                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center' }}>
+                                <TouchableOpacity style={styles.imageContainer} >
 
-                                    style={styles.img}
-                                />
-                            </TouchableOpacity>)}
+                                    <Image
+                                        source={item.image}
+                                        style={styles.img}
+                                    />
+                                </TouchableOpacity>
+                            </Card>
+                        )}
 
                         {item.identifier < 4 && (
-                            <TouchableOpacity style={styles.imageContainer} >
-                                <Image
-                                    source={item.image}
+                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center' }}>
+                                <TouchableOpacity style={styles.imageContainer} >
+                                    <Image
+                                        source={item.image}
 
-                                    style={styles.imgs}
-                                />
-                            </TouchableOpacity>)}
-
+                                        style={styles.imgs}
+                                    />
+                                </TouchableOpacity>
+                            </Card>)}
                         <View style={styles.subContainer}>
                             <TouchableOpacity style={styles.touchable} >
-                                <Text> {item.id}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.subContainer}>
-                            <TouchableOpacity style={styles.touchable} >
-                                <Text> Quantity {item.quantity}</Text>
+                                <Text > Quantity {item.quantity}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>)}
@@ -201,7 +202,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 20,
-        alignItems: 'center'
+        alignItems: 'center',
+        flexDirection: 'row',
+        padding: 10
     },
     img: {
         width: 240,
@@ -216,7 +219,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     touchable: {
-        width: 110,
+        width: 85,
+        paddingTop: 10,
         height: 30,
         backgroundColor: 'white',
         alignItems: 'center',
@@ -227,13 +231,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         width: 50,
         height: 30,
-        backgroundColor: 'gray'
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     subContainer: {
-        padding: 10
+        padding: 10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     imageContainer: {
-        padding: 10
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 
