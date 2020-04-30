@@ -128,11 +128,12 @@ class MapaScreen extends React.Component {
             return;
         }
         console.log("Origen que entra: ", origin);
-        await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
+        console.log("Destination que entra: ", destination);
+        await axios.get(`https://refunding-backend.herokuapp.com/directions/getKm?origin=${origin}&destination=${destination}`)
             .then((response) => {
-                console.log(response.data.data[0].legs[0].distance.text);
-                this.getPrice(String(response.data.data[0].legs[0].distance.text));
-                this.setState({ distance: response.data.data[0].legs[0].distance.text });
+                console.log("Response tiene " ,response.data[0].legs[0].distance.text);
+                this.getPrice(String(response.data[0].legs[0].distance.text));
+                this.setState({ distance: response.data[0].legs[0].distance.text });
                 console.log("El estado tiene: ", this.state.distance);
             })//Añadir a un state y mostrar en mapview
             .catch((error) => {
@@ -145,13 +146,13 @@ class MapaScreen extends React.Component {
         distance = aux.slice(0, 4);
         distance = parseFloat(distance);
         console.log("estoy imprimiendo lo que entra en axios: ", distance);
-        axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
+        axios.get(`https://refunding-backend.herokuapp.com/directions/getPrice?kilometer=${distance}`) //Transformar string en number!
             .then((response) => {
                 console.log(response.data);
-                let dato = response.data.data;
+                let dato = response.data;
                 console.log("Response.data.data tiene: ", dato);
                 //this.getRefund(String(response.data.data));
-                this.setState({ price: response.data.data.toString() });
+                this.setState({ price: response.data.toString() });
             })//Añadir a un state y mostrar en mapview
             .catch((error) => {
                 console.error(error);
@@ -165,7 +166,7 @@ class MapaScreen extends React.Component {
     getRefund(price) {  //Hace falta implementar esto visualmente
 
         precio = parseInt(price);
-        axios.get(`https://refunding-backend.herokuapp.com/api/getRefund?price=${precio}`)
+        axios.get(`https://refunding-backend.herokuapp.com/directions/getRefund?price=${precio}`)
             .then((response) => {
                 console.log(response.data);
                 this.setState({ refunds: response.data.refund });

@@ -2,16 +2,7 @@ import React from 'react';
 
 import { View, StyleSheet, TextInput, Button, Image } from 'react-native';
 
-const HomeScreen = props => {
-
-    change = () => {
-        props.onVista(2);
-    }
-
-    changeToo = () => {
-        props.onVista(3);
-    }
-    
+const HomeScreen = props => {    
     return (
         <View style={styles.screen}>
 

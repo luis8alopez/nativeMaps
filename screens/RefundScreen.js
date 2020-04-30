@@ -4,9 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { Card } from 'react-native-shadow-cards';
 
-import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
-
-
 let arr = [];
 let hel = [];
 let copy = [];
@@ -114,13 +111,12 @@ RefundScreen = props => {
     callApi = async () => {
 
         let price = props.navigation.getParam('price');
-        price = 15850;
         if (!price) {
             alert("There is no price");
             return;
         }
         //Apunte a esta Screen --- Tal vez Redux?
-        return await axios(`https://refunding-backend.herokuapp.com/api/getRefund?price=${price}`)
+        return await axios(`https://refunding-backend.herokuapp.com/directions/getRefund?price=${price}`)
             .then((response) => {
                 return response;
             })
@@ -132,20 +128,21 @@ RefundScreen = props => {
     useEffect(() => {
         const retorno = async () => {
             const reto = await callApi();
+            console.log(reto.data.refund);
             if (!reto) {
                 console.log("Something went wrong");
             }
-            setRefund(String(reto.data.refund.refund));
+            setRefund(String(reto.data.refund));
             //Acá se puede hacer machetazo pa llamar función que cambie el array data para mostrar
             let num = ["100000", "50000", "20000", "10000", "5000", "2000", "1000", "500", "200", "100", "50"];
 
             for (let i = 0; i < 11; i++) {
                 let help = num[i];
-                if (reto.data.refund.refund[help]) {
+                if (reto.data.refund[help]) {
                     arr = data.filter((obj) => {
                         return obj.id == help;
                     });
-                    arr[0].quantity = String(reto.data.refund.refund[help]);
+                    arr[0].quantity = String(reto.data.refund[help]);
                     //arr[0].quantity = String(reto.data.refund.refund[help].quantity);
                     hel.push(arr[0]);
                     console.log("cada iteración", arr);

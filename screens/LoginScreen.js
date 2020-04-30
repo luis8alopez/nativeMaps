@@ -50,7 +50,7 @@ const LoginScreen = props => {
             });
 
             if (result.type === "success") {
-                console.log("LoginScreen.js.js 21 | ", result.user.givenName);
+                console.log("LoginScreen.js.js 21 | ", result.user);
                 //TEST
                 await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${result.idToken}`)
                     .then((response) => {
@@ -62,10 +62,27 @@ const LoginScreen = props => {
                 const expiration = new Date(new Date().getTime() + expires * 1000); //Milisegundos
                 console.log("Expiration queda guardado así: ", expiration);
                 saveData(result.idToken, result.user.id, expiration);
+                //Save to DB if it's a new User
+                await axios.post('10.0.2.2:3000/users', {
+                    firstName: result.user.givenName,
+                    lastName: result.user.familyName,
+                    email: result.user.email,
+                    password: result.user.id,
+                    id: result.user.id,
+                    photo: result.user.photoUrl
+                })
+                    .then(function (response) {
+                        console.log(response+"R");
+                    })
+                    .catch(function (error) {
+                        console.log(error+"E");
+                    });
+                //
                 //TEST
                 props.navigation.navigate("Profile", {
                     username: result.user.givenName,
-                    photo: result.user.photoUrl
+                    photo: result.user.photoUrl,
+                    email: result.user.email
                 }); //after Google login redirect to Profile
                 return result.accessToken;
             } else {
