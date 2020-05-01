@@ -40,6 +40,19 @@ const LoginScreen = props => {
                 expiration: expiration.toISOString()
             }))
         };
+        //Método para buscar en mongo con el id y hacer update.
+        retrieveData = async () => {
+            try {
+              const value = await AsyncStorage.getItem('userData');
+              if (value !== null) {
+                // We have data!!
+                id = JSON.parse(value)
+                console.log("V: " ,id.userId);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          };
 
 
         try {
@@ -60,12 +73,11 @@ const LoginScreen = props => {
 
                 const expires = parseInt(exp) - parseInt(iat);
                 const expiration = new Date(new Date().getTime() + expires * 1000); //Milisegundos
-                console.log("Expiration queda guardado así: ", expiration);
                 saveData(result.idToken, result.user.id, expiration);
+                retrieveData();
                 //Save to DB if it's a new User
-                await axios.post('10.0.2.2:3000/users', {
-                    firstName: result.user.givenName,
-                    lastName: result.user.familyName,
+                await axios.post('https://refunding-backend.herokuapp.com/users/save', {
+                    firstName: result.user.name,
                     email: result.user.email,
                     password: result.user.id,
                     id: result.user.id,
@@ -73,6 +85,7 @@ const LoginScreen = props => {
                 })
                     .then(function (response) {
                         console.log(response+"R");
+                        console.log("Flag has", response.data);
                     })
                     .catch(function (error) {
                         console.log(error+"E");
@@ -113,6 +126,7 @@ const LoginScreen = props => {
                 console.error(error);
             });
         console.log(JSON.stringify(respuesta.data.expiresIn));
+        console.log("Respuesta tiene: ", respuesta.data);
 
         saveData = (token, userId, expiration) => {
             AsyncStorage.setItem('userData', JSON.stringify({

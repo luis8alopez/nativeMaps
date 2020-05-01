@@ -189,7 +189,9 @@ RefundScreen = props => {
                                 <Text > Quantity {item.quantity}</Text>
                             </TouchableOpacity>
                         </View>
+                        
                     </View>)}
+                    
             />
         </LinearGradient>
     );

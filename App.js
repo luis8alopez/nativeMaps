@@ -20,12 +20,12 @@ import Profile from './screens/Profile';
 const store = createStore(reducer);
 
 const Stack = createStackNavigator({
-  StartUp: StartUpScreen, 
-  Login: LoginScreen,
-  Profile: Profile,
-  Refund: RefundScreen,       
-  Resume: ResumeScreen,  
+  StartUp: StartUpScreen,
   Auth: AuthScreen,
+  Refund: RefundScreen,   
+  Login: LoginScreen,
+  Profile: Profile,       
+  Resume: ResumeScreen,  
   Map: MapaScreen,
   Home: HomeScreen,
   Find: FindMe,

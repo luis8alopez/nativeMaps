@@ -5,7 +5,8 @@ const initState = {
     loading: false,
     token: '',
     userId: '',
-    expirationDate: ''
+    expirationDate: '',
+    uri:''
 }
 
 export const reducer = (state, action) => {
@@ -23,6 +24,11 @@ export const reducer = (state, action) => {
             token: action.payload.token,
             userId: action.payload.userId,
             expirationDate: action.payload.expirationDate
+        }
+    }
+    if(action == "photo"){
+        return{
+            uri: action.payload.uri
         }
     }
 
