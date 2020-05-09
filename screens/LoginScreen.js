@@ -33,26 +33,30 @@ const LoginScreen = props => {
 
     signInWithGoogle = async () => {
 
-        saveData = (token, userId, expiration) => {
+        saveData = (token, userId, expiration, email, photo, name) => {
             AsyncStorage.setItem('userData', JSON.stringify({
                 token: token,
                 userId: userId,
-                expiration: expiration.toISOString()
+                expiration: expiration.toISOString(),
+                email: email,
+                photo: photo,
+                name: name
             }))
         };
         //Método para buscar en mongo con el id y hacer update.
         retrieveData = async () => {
             try {
-              const value = await AsyncStorage.getItem('userData');
-              if (value !== null) {
-                // We have data!!
-                id = JSON.parse(value)
-                console.log("V: " ,id.userId);
-              }
+                const value = await AsyncStorage.getItem('userData');
+                if (value !== null) {
+                    // We have data!!
+                    id = JSON.parse(value)
+                    console.log("V: ", id.userId);
+                    console.log("em: ", id.email);
+                }
             } catch (error) {
-              console.log(error);
+                console.log(error);
             }
-          };
+        };
 
 
         try {
@@ -73,22 +77,22 @@ const LoginScreen = props => {
 
                 const expires = parseInt(exp) - parseInt(iat);
                 const expiration = new Date(new Date().getTime() + expires * 1000); //Milisegundos
-                saveData(result.idToken, result.user.id, expiration);
+                saveData(result.idToken, result.user.id, expiration, result.user.email, result.user.photoUrl, result.user.givenName);
                 retrieveData();
-                //Save to DB if it's a new User
+                //Save to DB if it's a new User Cambiar a heroku
                 await axios.post('https://refunding-backend.herokuapp.com/users/save', {
-                    firstName: result.user.name,
+                    name: result.user.name,
                     email: result.user.email,
                     password: result.user.id,
                     id: result.user.id,
                     photo: result.user.photoUrl
                 })
                     .then(function (response) {
-                        console.log(response+"R");
+                        console.log(response + "R");
                         console.log("Flag has", response.data);
                     })
                     .catch(function (error) {
-                        console.log(error+"E");
+                        console.log(error + "Error en post");
                     });
                 //
                 //TEST
@@ -116,6 +120,7 @@ const LoginScreen = props => {
 
         console.log("Lo que hay en email y password es: " + email + " " + password);
 
+        //REFACTOR DESDE MONGO
         const respuesta = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
             {
                 email: email,
@@ -128,17 +133,20 @@ const LoginScreen = props => {
         console.log(JSON.stringify(respuesta.data.expiresIn));
         console.log("Respuesta tiene: ", respuesta.data);
 
-        saveData = (token, userId, expiration) => {
+        //Crear JWT para usar el token con el claim exp
+
+        saveData = (token, userId, expiration, email) => {
             AsyncStorage.setItem('userData', JSON.stringify({
                 token: token,
                 userId: userId,
-                expiration: expiration.toISOString()
+                expiration: expiration.toISOString(),
+                email: email
             }))
         };
 
         const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
         console.log("Expiration queda guardado así: ", expiration);
-        saveData(respuesta.data.idToken, respuesta.data.localId, expiration);
+        saveData(respuesta.data.idToken, respuesta.data.localId, expiration, email);
         props.navigation.navigate("Find");
     }
 

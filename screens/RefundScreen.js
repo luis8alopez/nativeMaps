@@ -143,7 +143,6 @@ RefundScreen = props => {
                         return obj.id == help;
                     });
                     arr[0].quantity = String(reto.data.refund[help]);
-                    //arr[0].quantity = String(reto.data.refund.refund[help].quantity);
                     hel.push(arr[0]);
                     console.log("cada iteración", arr);
                 }

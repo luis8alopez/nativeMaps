@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Button, AsyncStorage } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
 
 import Card from '../components/Card';
 
@@ -11,10 +12,37 @@ const ResumeScreen = props => {
     const [distance, setDistance] = useState('Distance');
     const [price, setPrice] = useState('Price');
     const [refund, setRefund] = useState('Refund');
+    const [email,setEmail] = useState('');
+
+    saveHistory = async (em,pre) => {
+        console.log("estoy entrando acá hay", em);
+        await axios.post('https://refunding-backend.herokuapp.com/users/saveHistory',
+            {
+                email: em,
+                precio: pre,
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     useEffect(() => {
+        retrieveData = async () => {
+            try {
+                const value = await AsyncStorage.getItem('userData');
+                if (value !== null) {
+                    // We have data!!
+                    id = JSON.parse(value)
+                    console.log("V: ", id);
+                    setEmail(id.email);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
         setDistance(props.navigation.getParam('distance'));
         setPrice(props.navigation.getParam('price'));
+        retrieveData();
     }, []);
 
     return (
@@ -33,9 +61,11 @@ const ResumeScreen = props => {
                     <View style={styles.vista}>
                         <Button style={styles.but} title="How to pay"
                             onPress={() => {
-                                props.navigation.navigate("Refund", {
-                                    price: price
-                                });
+                                saveHistory(email,price);
+                                retrieveData();
+                                // props.navigation.navigate("Refund", {
+                                //     price: price
+                                // });
                             }} />
                     </View>
 

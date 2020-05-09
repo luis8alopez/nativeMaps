@@ -16,11 +16,14 @@ import StartUpScreen from './screens/StartUpScreen';
 import ResumeScreen from './screens/ResumeScreen';
 import RefundScreen from './screens/RefundScreen';
 import Profile from './screens/Profile';
+import TestScreen from './screens/TestScreen';
 
 const store = createStore(reducer);
 
 const Stack = createStackNavigator({
+  
   StartUp: StartUpScreen,
+  Test: TestScreen,
   Auth: AuthScreen,
   Refund: RefundScreen,   
   Login: LoginScreen,

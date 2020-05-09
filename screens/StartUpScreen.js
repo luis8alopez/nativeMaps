@@ -15,7 +15,7 @@ const StartUpScreen = props => {
 
             const { token,userId,expiration } = data;
 
-            console.log("Pude traer token de asyncStorage: ", token);
+            //console.log("Pude traer token de asyncStorage: ", token);
             const expirationDate = new Date(expiration);
 
             if(expirationDate <= new Date() || !token || !userId){
@@ -23,7 +23,7 @@ const StartUpScreen = props => {
                 return;
             }            
             //Tengo que añadir la navigation
-            props.navigation.navigate("Find");
+            props.navigation.navigate("Profile");
 
             dispatch({type:"authenticate", payload: {token,userId,expirationDate}});
         };
