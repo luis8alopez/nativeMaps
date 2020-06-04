@@ -18,6 +18,8 @@ import RefundScreen from './screens/RefundScreen';
 import Profile from './screens/Profile';
 import TestScreen from './screens/TestScreen';
 import MoneyScreen from './screens/MoneyScreen';
+import PayAccountScreen from './screens/PayAccountScreen.js';
+import FinalScreen from './screens/FinalScreen';
 
 const store = createStore(reducer);
 
@@ -33,7 +35,9 @@ const Stack = createStackNavigator({
   Map: MapaScreen,
   Home: HomeScreen,
   Find: FindMe,
-  Money: MoneyScreen,
+  Money: MoneyScreen,   
+  Pay: PayAccountScreen,
+  Final: FinalScreen,
   });
 
 const AppContainer = createAppContainer(Stack);

@@ -5,9 +5,23 @@ import axios from 'axios';
 import { Card } from 'react-native-shadow-cards';
 import { Root, Popup } from 'popup-ui'
 
-let money = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-
+let coin = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+let cash = {
+    email: '',
+    money: {
+        50: 0,
+        100: 0,
+        200: 0,
+        500: 0,
+        1000: 0,
+        2000: 0,
+        5000: 0,
+        10000: 0,
+        20000: 0,
+        50000: 0,
+        100000: 0,
+    }
+};
 let data = [
     {
         id: '100000',
@@ -90,22 +104,7 @@ let data = [
 
 MoneyScreen = props => {
 
-    let cash = {
-        email: props.navigation.getParam('email'),
-        money: {
-            50: 0,
-            100: 0,
-            200: 0,
-            500: 0,
-            1000: 0,
-            2000: 0,
-            5000: 0,
-            10000: 0,
-            20000: 0,
-            50000: 0,
-            100000: 0,
-        }
-    };
+    cash.email = props.navigation.getParam('email');
 
     MoneyScreen['navigationOptions'] = screenProps => ({
         title: 'Home',
@@ -129,51 +128,35 @@ MoneyScreen = props => {
     const [quantity, setQuantity] = useState(0);
     const [force, setForce] = useState('');
 
-    saveMoney = (item) => {
-        money[item] = money[item] + 1;
-        data[item].quantity = String(money[item]);
-        setQuantity(money[item]);
-        console.log("esto es data en money", money);
+    saveMoney = (item, key) => {
+        coin[item] += 1;
+        cash.money[key] = coin[item];
+        console.log(cash.money);
+        data[item].quantity = String(coin[item]);
+        setQuantity(coin[item]);
+        console.log("esto es data en money", coin);
         setForce('a');
     };
 
-    organizeJson = () => {
-        let dat = {};
-        dat = money.reverse();
-        cash.money[50] = dat[0];
-        cash.money[100] = dat[1];
-        cash.money[200] = dat[2];
-        cash.money[500] = dat[3];
-        cash.money[1000] = dat[4];
-        cash.money[2000] = dat[5];
-        cash.money[5000] = dat[6];
-        cash.money[10000] = dat[7];
-        cash.money[20000] = dat[8];
-        cash.money[50000] = dat[9];
-        cash.money[100000] = dat[10];
-    };
-
-    sentMoney = async (data) => {
-        if (!money) {
+    sentMoney = async (fact) => {
+        const total = coin.reduce((a, b) => a + b, 0);
+        if (total == 0) {
             alert("Please type how much money do you have");
             return;
         }
-        console.log("andrés es un hijueputa", data);
         const respuesta = await axios.put(`https://refunding-backend.herokuapp.com/users/currentMoney`,
             {
                 email: props.navigation.getParam('email'),
-                money: data.money
+                money: fact.money
             })
             .catch((error) => {
                 console.error(error);
             });
 
-        console.log(JSON.stringify(data));
-        console.log("data queda asi: ", data);
+        console.log(JSON.stringify(fact));
+        console.log("fact queda asi: ", fact);
         props.navigation.navigate("Profile");
-
     };
-
 
     return (
         <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
@@ -187,7 +170,7 @@ MoneyScreen = props => {
                         {item.identifier >= 4 && (  //It renders from 1000 up
                             <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center' }}>
                                 <TouchableOpacity style={styles.imageContainer} onPress={() => {
-                                    saveMoney(index);
+                                    saveMoney(index, data[index].id);
 
                                 }}>
                                     <Image
@@ -201,8 +184,7 @@ MoneyScreen = props => {
                         {item.identifier < 4 && (
                             <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252073' }}>
                                 <TouchableOpacity style={styles.imageContainer} onPress={() => {
-                                    //this._onPress(item)
-                                    saveMoney(index);
+                                    saveMoney(index, data[index].id);
 
                                 }} >
                                     <Image
@@ -222,7 +204,6 @@ MoneyScreen = props => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.boton1} onPress={() => {
-                    organizeJson();
                     console.log("cash en money", cash);
                     sentMoney(cash);
                     console.log("holiii");
