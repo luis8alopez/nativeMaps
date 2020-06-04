@@ -15,12 +15,13 @@ import Card from '../components/UI/Card';
 import axios from 'axios';
 
 let pay = {
-    email:'andres.ao568gmail.com',
+    email:'',
     price: 0 
 };
 
 const PayAccountScreen = props => {
 
+    pay.email = props.navigation.getParam('email');
     const [debt, setDebt] = useState('');
 
     sentAccount = async (account) => {
@@ -32,7 +33,7 @@ const PayAccountScreen = props => {
 
         console.log("cuenta", pay.price);
 
-        const respuesta = await axios.put(`https://refunding-backend.herokuapp.com/api/getRefund?price=${debt.price}`,
+        const respuesta = await axios.put(`https://refunding-backend.herokuapp.com/api/getRefund?price=${account.price}`,
             { 
                 email: account.email,
                 price: account.price

@@ -5,25 +5,20 @@ import axios from 'axios';
 import { Card } from 'react-native-shadow-cards';
 
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
-state ={
-    persons: []
-};
 
 FinalScreen = props => {
-    const [history, setHistory] = useState([]);
 
     goToProfile = () =>{
         props.navigation.navigate("Profile");
      };
 
     getHistory = async () =>{
-        let email = props.navigation.getParam('email');
-        //price = 15850;
+        const email = props.navigation.getParam('email');
         if (!email) {
             alert("There is no price");
             return;
         }
-        return await axios(`https://refunding-backend.herokuapp.com/api/getRefund?price=${price}`)
+        return await axios(`https://refunding-backend.herokuapp.com/users/getHistory?email=${email}`)
             .then((response) => {
                 return response;
             })
