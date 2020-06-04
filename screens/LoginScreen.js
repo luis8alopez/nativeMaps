@@ -11,6 +11,8 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SocialIcon } from 'react-native-elements'
+
 
 import Card from '../components/UI/Card';
 import axios from 'axios';
@@ -30,9 +32,10 @@ const LoginScreen = props => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading,setLoading] = useState(false);
 
     signInWithGoogle = async () => {
-
+        setLoading(true);
         saveData = (token, userId, expiration, email, photo, name) => {
             AsyncStorage.setItem('userData', JSON.stringify({
                 token: token,
@@ -191,11 +194,16 @@ const LoginScreen = props => {
                         </View>
 
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.boton}
-                                onPress={this.signInWithGoogle}
-                            >
-                                <Text style={styles.texto}>Login With Google</Text>
-                            </TouchableOpacity>
+                            
+                            <SocialIcon
+                                    button
+                                    raised={true}
+                                    type='google'
+                                    iconSize={20}
+                                    title='Sign in with google     '
+                                    onPress={() => {this.signInWithGoogle()}}
+                                    loading={loading}
+                                />
                         </View>
 
                     </ScrollView>

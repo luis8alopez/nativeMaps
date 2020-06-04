@@ -1,7 +1,8 @@
 import React, { Component, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Image, AsyncStorage } from "react-native";
+import { Text, View, StyleSheet, Button, Image, AsyncStorage, TouchableOpacity, ActivityIndicator } from "react-native";
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import { LinearGradient } from 'expo-linear-gradient';
 
 function deleteUser() {
     try {
@@ -20,6 +21,8 @@ export default class Profile extends Component {
         this.state = {
             photo: 'icon.png',
             name: 'Hi',
+            isLoading: false,
+            email: 'hi'
         };
 
         this.retrieveData();
@@ -33,8 +36,10 @@ export default class Profile extends Component {
                 id = JSON.parse(value)
                 this.setState({
                     photo: id.photo,
-                    name: id.name
+                    name: id.name,
+                    email: id.email
                 });
+                console.log(value);
             }
         } catch (error) {
             console.log(error);
@@ -80,35 +85,55 @@ export default class Profile extends Component {
     render() {
 
         return (
-            <View style={styles.container}>
-                <Image
-                    source={{ uri: this.state.photo }}
-                    style={styles.img} />
+            <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
+                <View style={styles.container}>
+                    <Image
+                        source={{ uri: this.state.photo }}
+                        style={styles.img} />
 
-                <Text> Profile Screen </Text>
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                    Welcome, {this.state.name}
-                </Text>
+                    <Text style={{ fontSize: 20, fontWeight: "bold", color:'white' }}>
+                        Welcome, {this.state.name}
+                    </Text>
 
-                <View style={{ paddingTop: 10 }}>
-                    <Button
-                        title="Sign out"
-                        onPress={() => {
-                            deleteUser();
-                            this.props.navigation.navigate("Login")
-                        }}
-                    />
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                this.findCurrentLocationAsync();
+                            }}
+                        >
+                            <Text style={styles.texto}>Go To Map</Text>
+                        </TouchableOpacity>
+                    </View>
+
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                deleteUser();
+                                this.props.navigation.navigate("Login")
+                            }}
+                        >
+                            <Text style={styles.texto}>Sign Out</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                this.props.navigation.navigate("Money",{
+                                    email: this.state.email
+                                })
+                            }}
+                        >
+                            <Text style={styles.texto}>Charge Money To Wallet</Text>
+                        </TouchableOpacity>
+                    </View>        
+
                 </View>
-
-                <View style={{ paddingTop: 10 }}>
-                    <Button
-                        title="Go to Find my Location"
-                        onPress={() => {
-                            this.findCurrentLocationAsync();
-                        }}
-                    />
-                </View>
-            </View>
+            </LinearGradient>
         );
     }
 }
@@ -116,15 +141,37 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
         padding: 10
     },
     img: {
         width: 240,
-        height: 260, //Arreglar acá, así sea las imágenes de las monedas
+        height: 260, 
         padding: 10,
-        borderColor: 'black'
+        borderColor: 'white',
+        borderWidth: 1
+    },
+    gradient: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonContainer: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    boton: {
+        borderRadius: 50,
+        backgroundColor: '#252073',
+        width: 190,
+        alignItems: 'center',
+        height: 40,
+        justifyContent: 'center'
+    },
+    texto: {
+        color: 'white',
+        fontSize: 15
     }
 });

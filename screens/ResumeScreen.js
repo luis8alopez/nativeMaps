@@ -12,9 +12,9 @@ const ResumeScreen = props => {
     const [distance, setDistance] = useState('Distance');
     const [price, setPrice] = useState('Price');
     const [refund, setRefund] = useState('Refund');
-    const [email,setEmail] = useState('');
+    const [email, setEmail] = useState('');
 
-    saveHistory = async (em,pre) => {
+    saveHistory = async (em, pre) => {
         console.log("estoy entrando acá hay", em);
         await axios.post('https://refunding-backend.herokuapp.com/users/saveHistory',
             {
@@ -46,7 +46,7 @@ const ResumeScreen = props => {
     }, []);
 
     return (
-        <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+        <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
             <View style={styles.why}>
                 <Card style={styles.card}>
                     {/* Añadir una vista bonita en la card para ver el resumen del viaje */}
@@ -61,11 +61,11 @@ const ResumeScreen = props => {
                     <View style={styles.vista}>
                         <Button style={styles.but} title="How to pay"
                             onPress={() => {
-                                saveHistory(email,price);
+                                saveHistory(email, price);
                                 retrieveData();
-                                // props.navigation.navigate("Refund", {
-                                //     price: price
-                                // });
+                                props.navigation.navigate("Refund", {
+                                    price: price
+                                });
                             }} />
                     </View>
 
