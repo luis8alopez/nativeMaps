@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-    ScrollView,
-    View,
-    KeyboardAvoidingView,
-    StyleSheet,
-    Button,
-    TextInput,
-    Text,
-    AsyncStorage,
-    TouchableOpacity
-} from 'react-native';
+import {ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, TextInput, Text, Platform,
+    AsyncStorage, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Card from '../components/UI/Card';
 import axios from 'axios';
@@ -33,7 +24,7 @@ const PayAccountScreen = props => {
 
         console.log("cuenta", pay.price);
 
-        const respuesta = await axios.put(`https://refunding-backend.herokuapp.com/api/getRefund?price=${account.price}`,
+        const respuesta = await axios.post(`https://refunding-backend.herokuapp.com/users/getRefund`,
             { 
                 email: account.email,
                 price: account.price
@@ -41,15 +32,17 @@ const PayAccountScreen = props => {
             .catch((error) => {
                 console.error(error);
             }); 
-
         console.log(JSON.stringify(account));
-        props.navigation.navigate("Refund");
+        props.navigation.navigate("Final",{
+            email: pay.email
+        })
+        //props.navigation.navigate("Profile");
     };
 
     return (
         <KeyboardAvoidingView
-            behavior="padding"
-            keyboardVerticalOffset={50}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={0}
             style={styles.screen}
         >
             <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
@@ -58,6 +51,7 @@ const PayAccountScreen = props => {
 
                         <Text>Account</Text>
                         <TextInput
+                            keyboardType="numeric"
                             style={styles.input}
                             onChangeText={(debt) => setDebt(debt)}
                             value={debt}
@@ -65,9 +59,8 @@ const PayAccountScreen = props => {
 
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity style={styles.boton} onPress={() => {
-                                pay.price = debt
+                                pay.price = Number(debt);
                                 sentAccount(pay)
-                                console.log("holiii")
                             }} >
                                 <Text style={styles.texto}>Pay</Text>
                             </TouchableOpacity>

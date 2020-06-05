@@ -96,9 +96,6 @@ let dataOld =
     identifier: 10
 };
 
-
-
-
 RefundScreen = props => {
 
     const [refund, setRefund] = useState([]);

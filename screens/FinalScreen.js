@@ -20,12 +20,21 @@ FinalScreen = props => {
         }
         return await axios(`https://refunding-backend.herokuapp.com/users/getHistory?email=${email}`)
             .then((response) => {
+                console.log(response)
                 return response;
             })
             .catch((error) => {
                 console.log(error);
             });
     };
+
+    useEffect(() => {
+        const retorno = async () => {
+            const reto = await getHistory();
+            console.log(reto);
+        }
+        retorno();
+    }, []);
     
     return (
             <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>           

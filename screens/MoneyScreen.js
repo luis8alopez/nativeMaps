@@ -106,24 +106,24 @@ MoneyScreen = props => {
 
     cash.email = props.navigation.getParam('email');
 
-    MoneyScreen['navigationOptions'] = screenProps => ({
-        title: 'Home',
-        headerTitle: "Charge Money",
-        headerRight: () => <TouchableOpacity
-            onPress={() => {
-                organizeJson();
-                console.log("cash en money", cash);
-                sentMoney(cash);
-                console.log("holiii");
-            }}
-            backgroundColor="black"
-            title="Charge"
-            style={styles.boton1}
-        >
+    // MoneyScreen['navigationOptions'] = screenProps => ({
+    //     title: 'Home',
+    //     headerTitle: "Charge Money",
+    //     headerRight: () => <TouchableOpacity
+    //         onPress={() => {
+    //             organizeJson();
+    //             console.log("cash en money", cash);
+    //             sentMoney(cash);
+    //             console.log("holiii");
+    //         }}
+    //         backgroundColor="black"
+    //         title="Charge"
+    //         style={styles.boton1}
+    //     >
 
-            <Text style={styles.texto}> Charge</Text>
-        </TouchableOpacity>
-    });
+    //         <Text style={styles.texto}> Charge</Text>
+    //     </TouchableOpacity>
+    // });
 
     const [quantity, setQuantity] = useState(0);
     const [force, setForce] = useState('');
@@ -131,7 +131,6 @@ MoneyScreen = props => {
     saveMoney = (item, key) => {
         coin[item] += 1;
         cash.money[key] = coin[item];
-        console.log(cash.money);
         data[item].quantity = String(coin[item]);
         setQuantity(coin[item]);
         console.log("esto es data en money", coin);
@@ -139,6 +138,7 @@ MoneyScreen = props => {
     };
 
     sentMoney = async (fact) => {
+        
         const total = coin.reduce((a, b) => a + b, 0);
         if (total == 0) {
             alert("Please type how much money do you have");
@@ -154,8 +154,11 @@ MoneyScreen = props => {
             });
 
         console.log(JSON.stringify(fact));
-        console.log("fact queda asi: ", fact);
-        props.navigation.navigate("Profile");
+        props.navigation.navigate("Pay",{
+            email: cash.email
+        })
+        //props.navigation.navigate("Pay");
+        //Profile
     };
 
     return (
@@ -204,9 +207,8 @@ MoneyScreen = props => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.boton1} onPress={() => {
-                    console.log("cash en money", cash);
+                  
                     sentMoney(cash);
-                    console.log("holiii");
                 }} >
                     <Text style={styles.texto}>Ready</Text>
                 </TouchableOpacity>
