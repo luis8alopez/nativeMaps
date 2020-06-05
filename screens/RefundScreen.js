@@ -96,10 +96,23 @@ let dataOld =
     identifier: 10
 };
 
-
-
-
 RefundScreen = props => {
+
+    RefundScreen['navigationOptions'] = screenProps => ({
+        title: 'Home',
+        headerTitle: "Refund",
+        headerRight: () => <TouchableOpacity
+            onPress={() => {
+                props.navigation.navigate("Profile");
+            }}
+            backgroundColor="black"
+            title="Done"
+            style={styles.boton1}
+        >
+
+            <Text style={styles.texto}> Done </Text>
+        </TouchableOpacity>
+    });
 
     const [refund, setRefund] = useState([]);
     const [flag, setFlag] = useState(false);
@@ -115,7 +128,6 @@ RefundScreen = props => {
             alert("There is no price");
             return;
         }
-        //Apunte a esta Screen --- Tal vez Redux?
         return await axios(`https://refunding-backend.herokuapp.com/directions/getRefund?price=${price}`)
             .then((response) => {
                 return response;
@@ -128,10 +140,13 @@ RefundScreen = props => {
     useEffect(() => {
         const retorno = async () => {
             const reto = await callApi();
-            console.log("Refund tiene",reto.data.refund);
             if (!reto) {
                 console.log("Something went wrong");
+                alert("There is not enough money on your wallet");
+                props.navigation.navigate("Profile");
+                return;
             }
+            console.log("Refund tiene", reto.data.refund);
             setRefund(String(reto.data.refund.refund));
             //Acá se puede hacer machetazo pa llamar función que cambie el array data para mostrar
             let num = ["100000", "50000", "20000", "10000", "5000", "2000", "1000", "500", "200", "100", "50"];
@@ -162,7 +177,7 @@ RefundScreen = props => {
                 renderItem={({ item }) => (
                     <View style={styles.container}>
                         {item.identifier >= 4 && (  //It renders from 1000 up
-                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor:'#252073' }}>
+                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252073' }}>
                                 <TouchableOpacity style={styles.imageContainer} >
 
                                     <Image
@@ -174,7 +189,7 @@ RefundScreen = props => {
                         )}
 
                         {item.identifier < 4 && (
-                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor:'#252073'}}>
+                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252073' }}>
                                 <TouchableOpacity style={styles.imageContainer} >
                                     <Image
                                         source={item.image}
@@ -188,9 +203,9 @@ RefundScreen = props => {
                                 <Text style={styles.texto} > Quantity {item.quantity}</Text>
                             </TouchableOpacity>
                         </View>
-                        
+
                     </View>)}
-                    
+
             />
         </LinearGradient>
     );
@@ -234,18 +249,29 @@ const styles = StyleSheet.create({
     },
     subContainer: {
         padding: 10,
-        alignItems:'center',
-        justifyContent:'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     imageContainer: {
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'#252073'
+        backgroundColor: '#252073'
     },
     texto: {
         color: 'white',
         fontSize: 15
+    },
+    boton1: {
+        bottom: 10,
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#252073',
+        borderRadius: 50,
+        width: 80,
+        height: 40,
+        right: 10
     }
 });
 

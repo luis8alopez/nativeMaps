@@ -1,5 +1,5 @@
 import React, { Component, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Image, AsyncStorage, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, Button, Image, AsyncStorage, TouchableOpacity, Modal } from "react-native";
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,7 +22,8 @@ export default class Profile extends Component {
             photo: 'icon.png',
             name: 'Hi',
             isLoading: false,
-            email: 'hi'
+            email: 'hi',
+            visible: false
         };
 
         this.retrieveData();
@@ -91,7 +92,7 @@ export default class Profile extends Component {
                         source={{ uri: this.state.photo }}
                         style={styles.img} />
 
-                    <Text style={{ fontSize: 20, fontWeight: "bold", color:'white' }}>
+                    <Text style={{ fontSize: 20, fontWeight: "bold", color: 'white' }}>
                         Welcome, {this.state.name}
                     </Text>
 
@@ -123,14 +124,52 @@ export default class Profile extends Component {
                         <TouchableOpacity
                             style={styles.boton}
                             onPress={() => {
-                                this.props.navigation.navigate("Money",{
-                                    email: this.state.email
-                                })
+                                this.props.navigation.navigate("Money", {
+                                     email: this.state.email
+                                })                                
                             }}
                         >
                             <Text style={styles.texto}>Charge Money To Wallet</Text>
                         </TouchableOpacity>
-                    </View>        
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                this.props.navigation.navigate("Pay",{
+                                    email:this.state.email
+                                })                                
+                            }}
+                        >
+                            <Text style={styles.texto}>Pay Something</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={this.state.visible}
+                    onRequestClose={() => {
+                        this.setState({visible:false});
+                    }
+                    }>
+                    <TouchableOpacity
+                        style={styles.cont}
+                        activeOpacity={1}
+                        onPressOut={() => { this.setModal(false) }}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalButtonView}>
+
+                            <TouchableOpacity style={styles.imageContainer} onPress={() =>this.setState({visible:false})}> 
+                            <Text style={styles.texto}>{this.state.distance}</Text> 
+                            </TouchableOpacity>
+
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </Modal>
 
                 </View>
             </LinearGradient>
@@ -140,22 +179,35 @@ export default class Profile extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex:1,
         alignItems: "center",
         justifyContent: "center",
         padding: 10
     },
     img: {
         width: 240,
-        height: 260, 
+        height: 260,
         padding: 10,
         borderColor: 'white',
         borderWidth: 1
+    },
+    imageContainer: {
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor:'#252073'
     },
     gradient: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    modalContainer: {
+        position: 'absolute',
+        width: '100%',
+        backgroundColor: 'white',
+        height:'50%',
+        right:0
     },
     buttonContainer: {
         marginTop: 10,
@@ -173,5 +225,30 @@ const styles = StyleSheet.create({
     texto: {
         color: 'white',
         fontSize: 15
+    },
+    button: {
+        backgroundColor: 'lightblue',
+        padding: 12,
+        margin: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 22,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+    },
+    bottomModal: {
+        justifyContent: 'flex-end',
+        margin: 0,
+    },
+    cont: {
+        height: 200,
+        padding: 95
     }
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Button, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Button, AsyncStorage, TouchableOpacity, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
@@ -50,25 +50,37 @@ const ResumeScreen = props => {
             <View style={styles.why}>
                 <Card style={styles.card}>
                     {/* Añadir una vista bonita en la card para ver el resumen del viaje */}
-                    <View style={styles.vista}>
-                        <Button style={styles.but} title={distance} />
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                        >
+                            <Text style={styles.texto}>{distance}</Text>
+                        </TouchableOpacity>
                     </View>
 
-                    <View style={styles.vista}>
-                        <Button style={styles.but} title={price} />
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                        >
+                            <Text style={styles.texto}>{price}</Text>
+                        </TouchableOpacity>
                     </View>
 
-                    <View style={styles.vista}>
-                        <Button style={styles.but} title="How to pay"
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
                             onPress={() => {
                                 saveHistory(email, price);
                                 retrieveData();
                                 props.navigation.navigate("Refund", {
                                     price: price
                                 });
-                            }} />
+                            }}
+                        >
+                            <Text style={styles.texto}>Confirm Trip</Text>
+                        </TouchableOpacity>
                     </View>
-
                 </Card>
             </View>
         </LinearGradient>
@@ -88,6 +100,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    buttonContainer: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    boton: {
+        borderRadius: 50,
+        backgroundColor: '#252073',
+        width: 150,
+        alignItems: 'center',
+        height: 40,
+        justifyContent: 'center'
     },
     mapStyle: {
         width: '90%',
@@ -110,13 +135,17 @@ const styles = StyleSheet.create({
         width: 200,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#B4E1FF'
+        backgroundColor: 'white'
     },
     button: {
         color: '#F7ECE1',
         marginBottom: 20,
         width: 140,
         marginTop: 10
+    },
+    texto: {
+        color: 'white',
+        fontSize: 15
     },
     vista: {
         padding: 10,

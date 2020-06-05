@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/EvilIcons'
 import { OffCanvas3D } from 'react-native-off-canvas-menu'
 import LoginScreen from './LoginScreen';
 import AuthScreen from './AuthScreen';
+import App from '../';
+
 
 
 export default class Profile extends React.Component {
@@ -20,16 +22,18 @@ export default class Profile extends React.Component {
     static navigationOptions = ({ navigate, navigation }) => ({
         headerTitle: "Test",
         headerRight: () => <Button
-            onPress={navigation.getParam('handle')}
+            onPress={() => {
+                param = navigation.getParam('handle');
+                param();
+            }}
             title="Nav"
             color="black"
         />
         ,
     });
 
-    handleMenu() {
-        const men = this.menuOpen;
-        this.setState({menuOpen: !men});
+    handleMenu = () => {
+        this.setState({ menuOpen: !this.state.menuOpen });
     }
 
     componentDidMount() {
@@ -56,7 +60,12 @@ export default class Profile extends React.Component {
                             title: 'Auth',
                             icon: <Icon name="bell" size={35} color='#ffffff' />,
                             renderScene: <AuthScreen />
-                        }
+                        },
+                        {
+                            title: 'Profile',
+                            icon: <Icon name="location" size={35} color='#ffffff' />,
+                            renderScene: <App />
+                        },
                     ]} />
             </View>
         )
