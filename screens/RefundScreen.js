@@ -121,15 +121,21 @@ RefundScreen = props => {
         data = copy[0];
     }
 
-    callApi = async () => {
+    callApi = async (price,email) => {
 
-        let price = props.navigation.getParam('price');
+
         if (!price) {
             alert("There is no price");
             return;
         }
-        return await axios(`https://refunding-backend.herokuapp.com/directions/getRefund?price=${price}`)
-            .then((response) => {
+        let ayuda = parseInt(price);
+        return await axios.post('https://refunding-backend.herokuapp.com/users/getRefund',
+        {
+            email: email,
+            price: ayuda,
+        })
+        .then((response) => {
+            console.log("Response trae devuelta: ",response.data);
                 return response;
             })
             .catch((error) => {
@@ -138,26 +144,32 @@ RefundScreen = props => {
     }
 
     useEffect(() => {
+        let price = props.navigation.getParam('price');
+        let email = props.navigation.getParam('email');
+        console.log("Price tiene: ", price);
         const retorno = async () => {
-            const reto = await callApi();
-            if (!reto) {
+            const reto = await callApi(price,email);
+            console.log("El back devuelve", reto);
+            if (!reto) {        
                 console.log("Something went wrong");
                 alert("There is not enough money on your wallet");
                 props.navigation.navigate("Profile");
                 return;
             }
-            console.log("Refund tiene", reto.data.refund);
-            setRefund(String(reto.data.refund.refund));
+            alert("Purchase confirmed");
+            //console.log("Refund tiene", reto.data.refund);
+            setRefund(String(reto.data.refund));
             //Acá se puede hacer machetazo pa llamar función que cambie el array data para mostrar
             let num = ["100000", "50000", "20000", "10000", "5000", "2000", "1000", "500", "200", "100", "50"];
 
             for (let i = 0; i < 11; i++) {
                 let help = num[i];
-                if (reto.data.refund.refund[help]) {
+                //console.log("refund tiene: ", reto.data);
+                if (reto.data.refund[help]) {
                     arr = data.filter((obj) => {
                         return obj.id == help;
                     });
-                    arr[0].quantity = String(reto.data.refund.refund[help]);
+                    arr[0].quantity = String(reto.data.refund[help]);
                     hel.push(arr[0]);
                     console.log("cada iteración", arr);
                 }

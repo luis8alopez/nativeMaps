@@ -15,6 +15,22 @@ function deleteUser() {
 
 export default class Profile extends Component {
 
+    static navigationOptions = ({ navigate, navigation }) => ({
+        headerTitle: "Profile",
+        headerLeft: () => null,
+        headerRight: () => <TouchableOpacity
+            onPress={() => {
+                deleteUser();
+                navigation.navigate("Login");
+            }}
+            backgroundColor="black"
+            title="Sign Out"
+            style={styles.boton1}
+        >
+            <Text style={styles.texto}> Sign Out</Text>
+        </TouchableOpacity>
+    });
+
     constructor(props) {
         super(props);
 
@@ -143,6 +159,19 @@ export default class Profile extends Component {
                             }}
                         >
                             <Text style={styles.texto}>Pay Something</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                this.props.navigation.navigate("History", {
+                                     email: this.state.email
+                                })                                
+                            }}
+                        >
+                            <Text style={styles.texto}>My Expenses</Text>
                         </TouchableOpacity>
                     </View>
 

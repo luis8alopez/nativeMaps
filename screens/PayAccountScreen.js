@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, TextInput, Text, Platform,
     AsyncStorage, TouchableOpacity
@@ -6,6 +6,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import Card from '../components/UI/Card';
 import axios from 'axios';
+import { pause } from 'expo/build/AR';
 
 let pay = {
     email: '',
@@ -15,6 +16,10 @@ let pay = {
 const PayAccountScreen = props => {
 
     const [debt,setDebt] = useState('');
+
+    useEffect(() => {
+        pay.email = props.navigation.getParam('email');
+    },[]);
 
     saveHistory = async (em, pre) => {
         console.log("estoy entrando acá hay", em);
@@ -53,7 +58,8 @@ const PayAccountScreen = props => {
                                 pay.price = Number(debt);
                                 saveHistory(pay.email,pay.price);
                                 props.navigation.navigate("Refund",{
-                                    price: pay.price
+                                    price: pay.price,
+                                    email: pay.email
                                 })
                             }} >
                                 <Text style={styles.texto}>Pay</Text>
@@ -65,15 +71,13 @@ const PayAccountScreen = props => {
             </LinearGradient>
         </KeyboardAvoidingView>
     );
-
 };
 
 PayAccountScreen['navigationOptions'] = screenProps => ({
     title: 'Enter the debt to pay',
     headerStyle: {
         backgroundColor: '#e7ffff', //Ajustar color bonito
-    },
-    headerLeft: () => null
+    }
 })
 
 const styles = StyleSheet.create({

@@ -19,6 +19,7 @@ import Profile from './screens/Profile';
 import TestScreen from './screens/TestScreen';
 import MoneyScreen from './screens/MoneyScreen';
 import PayAccountScreen from './screens/PayAccountScreen';
+import HistoryScreen from './screens/HistoryScreen';
 
 const store = createStore(reducer);
 
@@ -34,7 +35,8 @@ const Stack = createStackNavigator({
   Home: HomeScreen,
   Find: FindMe,
   Money: MoneyScreen,
-  Pay: PayAccountScreen
+  Pay: PayAccountScreen,
+  History: HistoryScreen
   });
 
 const AppContainer = createAppContainer(Stack);

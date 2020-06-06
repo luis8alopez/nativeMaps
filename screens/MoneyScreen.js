@@ -110,20 +110,6 @@ MoneyScreen = props => {
     MoneyScreen['navigationOptions'] = screenProps => ({
         title: 'Home',
         headerTitle: "Charge Money",
-        headerRight: () => <TouchableOpacity
-            onPress={() => {
-                organizeJson();
-                console.log("cash en money", cash);
-                sentMoney(cash);
-                console.log("holiii");
-            }}
-            backgroundColor="black"
-            title="Charge"
-            style={styles.boton1}
-        >
-
-            <Text style={styles.texto}> Charge</Text>
-        </TouchableOpacity>
     });
 
     const [quantity, setQuantity] = useState(0);
@@ -226,6 +212,7 @@ MoneyScreen = props => {
                     console.log("cash en money", cash);
                     sentMoney(cash);
                     console.log("holiii");
+                    alert("The money has been charged to your account");
                 }} >
                     <Text style={styles.texto}>Ready</Text>
                 </TouchableOpacity>

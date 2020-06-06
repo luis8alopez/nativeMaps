@@ -72,9 +72,9 @@ const ResumeScreen = props => {
                             style={styles.boton}
                             onPress={() => {
                                 saveHistory(email, price);
-                                retrieveData();
                                 props.navigation.navigate("Refund", {
-                                    price: price
+                                    price: price,
+                                    email: email
                                 });
                             }}
                         >
