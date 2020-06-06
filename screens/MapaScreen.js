@@ -59,14 +59,20 @@ class MapaScreen extends React.Component {
             distance: "Distance",
             price: "Price",
             refunds: [],
-            visible: false
+            visible: false,
+            vis: false,
+            rd: 0
 
         };
     }
 
+    clean(){
+        id= 0;
+    }
+
     // From here
     onPlaces(location) {
-        if (id <= 1) {
+        if (this.state.rd <= 1) {
             let guardo = {
                 latitude: location.lat,
                 longitude: location.lng
@@ -86,21 +92,21 @@ class MapaScreen extends React.Component {
                         coordinate: guardo,
                         latitude: location.lat,
                         longitude: location.lng,
-                        key: id++,
+                        key: this.setState({rd: this.state.rd + 1}),
                         color: randomColor(),
                     },
                 ],
             });
 
         } else {
-            console.log("There is already two markers, we don't allow more");
+            console.log("There is already two markers, we don't allow more", this.state.markers);
         }
         console.log(location);
     }
     //To here
 
     onMapPress(e) {
-        if (id <= 1) {
+        if (this.state.rd <= 1) {
             this.setState({
                 markers: [
                     ...this.state.markers,
@@ -108,7 +114,7 @@ class MapaScreen extends React.Component {
                         coordinate: e.nativeEvent.coordinate,
                         latitude: e.nativeEvent.coordinate.latitude,
                         longitude: e.nativeEvent.coordinate.longitude,
-                        key: id++,
+                        key: this.setState({rd: this.state.rd + 1}),
                         color: randomColor(),
                     },
                 ],
@@ -318,6 +324,7 @@ class MapaScreen extends React.Component {
 
                             <TouchableOpacity style={styles.imageContainer} onPress={() => {
                                 this.setModal(false);
+                                this.clean();
                                 this.props.navigation.navigate("Resume",
                                     {
                                         price: this.state.price,
