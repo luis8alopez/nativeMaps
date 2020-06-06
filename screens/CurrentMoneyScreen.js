@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Image, StyleSheet, FlatList, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, Image, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { Card } from 'react-native-shadow-cards';
 
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
-FinalScreen = props => {
+CurrenMoneyScreen = props => {
 
     let [historia,setHistoria] = useState([]);
 
@@ -20,9 +20,9 @@ FinalScreen = props => {
             alert("There is no price");
             return;
         }
-        return await axios(`https://refunding-backend.herokuapp.com/users/getHistory?email=${email}`)
+        return await axios(`URL?email=${email}`)
             .then((response) => {
-                console.log(response.data[0].createdAt.substr(11,11));
+                console.log(response.data);
                 return response.data;
             })
             .catch((error) => {
@@ -35,10 +35,6 @@ FinalScreen = props => {
                 return (
                     <View key={i}>
                         <Text>
-                            {dato.createdAt.substr(11,11).concat('--',dato.updatedAt.substr(0,10))}
-                        </Text>
-                        <Text>
-                            $
                             {dato.precio}
                         </Text>
                     </View>
@@ -55,27 +51,23 @@ FinalScreen = props => {
     }, []);
     
     return (
-            <ScrollView>
-                <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
-                        <View style={styles.why}>
-                            <Text style={{ fontSize: 20, fontWeight: "bold", color:'#e1f5fe' }}>
-                                Accounts
-                            </Text>
-                            <Card style={styles.authContainer}>
-                                <View>
-                                    {parseData()}
-                                </View>    
-                            </Card>
-                            <Button style={styles.button} title="Finish" onPress={this.goToProfile} />
+            <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>           
+                <View style={styles.why}>
+                    <Text>Current Money</Text>
+                    <Card style={styles.authContainer}>
+                        <View>
+                            {parseData()}
                         </View>
-                </LinearGradient>
-            </ScrollView>
+                    </Card>
+                    <Button style={styles.button} title="Finish" onPress={this.goToProfile} />
+                </View>
+            </LinearGradient>
     );
     
 };
 
-FinalScreen['navigationOptions'] = screenProps => ({
-    title: 'History',
+CurrenMoneyScreen['navigationOptions'] = screenProps => ({
+    title: 'Current Money',
     headerStyle: {
         backgroundColor: '#e7ffff', //Ajustar color bonito
     },
@@ -88,7 +80,7 @@ const styles = StyleSheet.create({
     },
     why: {
         flex: 1,
-        marginVertical: 30,
+        marginVertical: 220,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -100,6 +92,7 @@ const styles = StyleSheet.create({
     authContainer: {
         width: '80%',
         maxWidth: 600,
+        maxHeight: 400,
         padding: 20
     },
     boton: {
@@ -115,4 +108,4 @@ const styles = StyleSheet.create({
         fontSize: 15
     }
 });
-export default FinalScreen;
+export default CurrenMoneyScreen;

@@ -123,7 +123,7 @@ export default class Profile extends Component {
                         <TouchableOpacity
                             style={styles.boton}
                             onPress={() => {
-                                this.props.navigation.navigate("Money",{
+                                this.props.navigation.navigate("Money",{//Cambiar a money de nuevo
                                     email: this.state.email
                                 })
                             }}

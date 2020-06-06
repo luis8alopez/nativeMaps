@@ -106,25 +106,6 @@ MoneyScreen = props => {
 
     cash.email = props.navigation.getParam('email');
 
-    // MoneyScreen['navigationOptions'] = screenProps => ({
-    //     title: 'Home',
-    //     headerTitle: "Charge Money",
-    //     headerRight: () => <TouchableOpacity
-    //         onPress={() => {
-    //             organizeJson();
-    //             console.log("cash en money", cash);
-    //             sentMoney(cash);
-    //             console.log("holiii");
-    //         }}
-    //         backgroundColor="black"
-    //         title="Charge"
-    //         style={styles.boton1}
-    //     >
-
-    //         <Text style={styles.texto}> Charge</Text>
-    //     </TouchableOpacity>
-    // });
-
     const [quantity, setQuantity] = useState(0);
     const [force, setForce] = useState('');
 
@@ -157,8 +138,6 @@ MoneyScreen = props => {
         props.navigation.navigate("Pay",{
             email: cash.email
         })
-        //props.navigation.navigate("Pay");
-        //Profile
     };
 
     return (
@@ -205,17 +184,35 @@ MoneyScreen = props => {
                     </View>)}
             />
 
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.boton1} onPress={() => {
                   
                     sentMoney(cash);
                 }} >
                     <Text style={styles.texto}>Ready</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </LinearGradient>
     );
 }
+MoneyScreen['navigationOptions'] = screenProps => ({
+        title: 'Money',
+        headerTitle: "Charge Money",
+        headerRight: () => <TouchableOpacity
+            onPress={() => {
+                //organizeJson();
+                console.log("cash en money", cash);
+                sentMoney(cash);
+                console.log("holiii");
+            }}
+            backgroundColor="black"
+            title="Charge"
+            style={styles.boton1}
+        >
+
+            <Text style={styles.texto}> Charge</Text>
+        </TouchableOpacity>
+    });
 
 const styles = StyleSheet.create({
     container: {
