@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, View, Button, Text, AsyncStorage, Modal } from 'react-native';
+import { StyleSheet, View, Button, TouchableOpacity, AsyncStorage, Modal, Text } from 'react-native';
 import { Marker } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -30,16 +30,18 @@ class MapaScreen extends React.Component {
 
     static navigationOptions = ({ navigate, navigation }) => ({
         headerTitle: "Map",
-        headerRight: () => <Button
+        headerRight: () => <TouchableOpacity
             onPress={() => {
                 deleteUser();
                 navigation.navigate("Login");
-                //console.log("La devuelta es: ")
             }}
+            backgroundColor="black"
             title="Sign Out"
-            color="black"
-        />
-        ,
+            style={styles.boton1}
+        >
+
+            <Text style={styles.texto}> Sign Out</Text>
+        </TouchableOpacity>
     });
 
 
@@ -57,14 +59,20 @@ class MapaScreen extends React.Component {
             distance: "Distance",
             price: "Price",
             refunds: [],
-            visible: false
+            visible: false,
+            vis: false,
+            rd: 0
 
         };
     }
 
+    clean(){
+        id= 0;
+    }
+
     // From here
     onPlaces(location) {
-        if (id <= 1) {
+        if (this.state.rd <= 1) {
             let guardo = {
                 latitude: location.lat,
                 longitude: location.lng
@@ -84,21 +92,21 @@ class MapaScreen extends React.Component {
                         coordinate: guardo,
                         latitude: location.lat,
                         longitude: location.lng,
-                        key: id++,
+                        key: this.setState({rd: this.state.rd + 1}),
                         color: randomColor(),
                     },
                 ],
             });
 
         } else {
-            console.log("There is already two markers, we don't allow more");
+            console.log("There is already two markers, we don't allow more", this.state.markers);
         }
         console.log(location);
     }
     //To here
 
     onMapPress(e) {
-        if (id <= 1) {
+        if (this.state.rd <= 1) {
             this.setState({
                 markers: [
                     ...this.state.markers,
@@ -106,7 +114,7 @@ class MapaScreen extends React.Component {
                         coordinate: e.nativeEvent.coordinate,
                         latitude: e.nativeEvent.coordinate.latitude,
                         longitude: e.nativeEvent.coordinate.longitude,
-                        key: id++,
+                        key: this.setState({rd: this.state.rd + 1}),
                         color: randomColor(),
                     },
                 ],
@@ -117,7 +125,7 @@ class MapaScreen extends React.Component {
                 this.setState({ destination: e.nativeEvent.coordinate })
             }
         } else {
-            console.log("There is already two markers, we don't allow more");
+            alert("There is already two markers, we don't allow more");
         }
         console.log(e.nativeEvent.coordinate);
     }
@@ -128,11 +136,12 @@ class MapaScreen extends React.Component {
             return;
         }
         console.log("Origen que entra: ", origin);
-        await axios.get(`https://refunding-backend.herokuapp.com/api/getKm?origin=${origin}&destination=${destination}`)
+        console.log("Destination que entra: ", destination);
+        axios.get(`https://refunding-backend.herokuapp.com/directions/getKm?origin=${origin}&destination=${destination}`)
             .then((response) => {
-                console.log(response.data.data[0].legs[0].distance.text);
-                this.getPrice(String(response.data.data[0].legs[0].distance.text));
-                this.setState({ distance: response.data.data[0].legs[0].distance.text });
+                console.log("Response tiene ", response.data[0].legs[0].distance.text);
+                this.getPrice(String(response.data[0].legs[0].distance.text));
+                this.setState({ distance: response.data[0].legs[0].distance.text });
                 console.log("El estado tiene: ", this.state.distance);
             })//Añadir a un state y mostrar en mapview
             .catch((error) => {
@@ -145,13 +154,13 @@ class MapaScreen extends React.Component {
         distance = aux.slice(0, 4);
         distance = parseFloat(distance);
         console.log("estoy imprimiendo lo que entra en axios: ", distance);
-        axios.get(`https://refunding-backend.herokuapp.com/api/getPrice?kilometer=${distance}`) //Transformar string en number!
+        axios.get(`https://refunding-backend.herokuapp.com/directions/getPrice?kilometer=${distance}`)
             .then((response) => {
                 console.log(response.data);
-                let dato = response.data.data;
-                console.log("Response.data.data tiene: ", dato);
+                let dato = response.data;
+                console.log("Response.data.data tiene: ", dato.price);
                 //this.getRefund(String(response.data.data));
-                this.setState({ price: response.data.data.toString() });
+                this.setState({ price: response.data.price.toString() });
             })//Añadir a un state y mostrar en mapview
             .catch((error) => {
                 console.error(error);
@@ -165,7 +174,7 @@ class MapaScreen extends React.Component {
     getRefund(price) {  //Hace falta implementar esto visualmente
 
         precio = parseInt(price);
-        axios.get(`https://refunding-backend.herokuapp.com/api/getRefund?price=${precio}`)
+        axios.get(`https://refunding-backend.herokuapp.com/directions/getRefund?price=${precio}`)
             .then((response) => {
                 console.log(response.data);
                 this.setState({ refunds: response.data.refund });
@@ -176,8 +185,8 @@ class MapaScreen extends React.Component {
             });
     }
 
-    switch(){
-        this.props.navigation.navigate("Resume",{price:this.state.price});
+    switch() {
+        this.props.navigation.navigate("Resume", { price: this.state.price });
     }
 
     render() {
@@ -186,7 +195,6 @@ class MapaScreen extends React.Component {
                 <MapView style={styles.mapStyle}
                     showsUserLocation
                     onPress={e => this.onMapPress(e)}
-                    onLongPress={t => this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude)}
                     initialRegion={{
                         latitude: this.props.navigation.getParam('latitude'),
                         longitude: this.props.navigation.getParam('longitude'),
@@ -226,10 +234,17 @@ class MapaScreen extends React.Component {
                 <View style={styles.horizon}>
 
                     {this.state.markers.length >= 2 && (
-                        <Button onPress={async () => {
-                            await this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude);
-                            this.setModal(true);
-                        }} style={styles.but} title='Calculate' />
+
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={async () => {
+                                await this.getDistance(this.state.origin.latitude + "," + this.state.origin.longitude, this.state.destination.latitude + "," + this.state.destination.longitude);
+                                this.setModal(true);
+                            }}
+                        >
+                            <Text style={styles.texto}>Calculate</Text>
+                        </TouchableOpacity>
+
                     )}
                 </View>
                 {/*End of buttons that appear*/}
@@ -241,6 +256,8 @@ class MapaScreen extends React.Component {
                         autoFocus={false}
                         returnKeyType={'search'}
                         listViewDisplayed={false}
+                        enablePoweredByContainer={false}
+                        listUnderlayColor="white"
                         fetchDetails={true}
                         onPress={(data, details = null) => {
                             console.log(details.geometry);
@@ -249,6 +266,7 @@ class MapaScreen extends React.Component {
                         query={{
                             key: 'AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
                             language: 'es', // language of the results
+                            components: 'country:co'
                         }}
                         styles={{
                             description: {
@@ -256,7 +274,7 @@ class MapaScreen extends React.Component {
                                 width: 220,
                             },
                             textInputContainer: {
-                                backgroundColor: 'black',
+                                backgroundColor: '#252073',
                                 width: '100%',
                             },
                             predefinedPlacesDescription: {
@@ -282,20 +300,42 @@ class MapaScreen extends React.Component {
                         setModal(false)
                     }
                     }>
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalButtonView}>
-                                <Button title={this.state.distance} onPress={() => this.setModal(false)}/>                 
-                                <Button style={styles.but} title={this.state.price} onPress={() => this.setModal(false)}/>                            
-                        </View>
+                    <TouchableOpacity
+                        style={styles.cont}
+                        activeOpacity={1}
+                        onPressOut={() => { this.setModal(false) }}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalButtonView}>
 
-                        <View style={{padding:10, flexDirection:'row', justifyContent:'space-around'}}>
-                            <Button title="Confirm" onPress={()=>{
+                            <TouchableOpacity style={styles.imageContainer} onPress={() =>this.setModal(false)}> 
+                            <Text style={styles.texto}>{this.state.distance}</Text> 
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.imageContainer} onPress={() =>this.setModal(false)}> 
+                            <Text style={styles.texto}>{this.state.price}</Text> 
+                            </TouchableOpacity>
+
+                                
+                                {/* <Button style={styles.but} title={this.state.price} onPress={() => this.setModal(false)} /> */}
+                            </View>
+
+                            <View style={{ padding: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
+
+                            <TouchableOpacity style={styles.imageContainer} onPress={() => {
                                 this.setModal(false);
+                                this.clean();
                                 this.props.navigation.navigate("Resume",
-                                {price:this.state.price,
-                                distance:this.state.distance})}}/>
+                                    {
+                                        price: this.state.price,
+                                        distance: this.state.distance
+                                    })
+                            }}> 
+                            <Text style={styles.texto}>Confirm</Text> 
+                            </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 </Modal>
                 {/* Modal Ends */}
             </View>
@@ -354,10 +394,49 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         bottom: 0
     },
+    boton: {
+        borderRadius: 50,
+        backgroundColor: '#252073',
+        width:80,
+        height: 50,
+        bottom: 5,
+        left:5,
+        justifyContent: 'center',
+        alignItems:'center',
+        position: 'absolute'
+    },
     modalButtonView: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        padding:10
+        padding: 10
+    },
+    cont: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+    boton1: {
+        bottom: 10,
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#252073',
+        borderRadius: 50,
+        width: 80,
+        height: 40,
+    },
+    texto: {
+        color: 'white',
+        fontSize: 15
+    },
+    imageContainer: {
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor:'#252073'
     }
 });
 

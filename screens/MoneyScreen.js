@@ -3,10 +3,11 @@ import { Text, View, Image, StyleSheet, FlatList, Button, TouchableOpacity } fro
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { Card } from 'react-native-shadow-cards';
+import { Root, Popup } from 'popup-ui'
 
-let arr = [];
-let hel = [];
-let copy = [];
+let money = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+
 let data = [
     {
         id: '100000',
@@ -87,111 +88,94 @@ let data = [
     },
 ];
 
-let dataOld =
-{
-    id: '100000',
-    title: 'Cienmil',
-    image: require('../assets/rsz_100000.jpg'),
-    quantity: '0',
-    identifier: 10
-};
+MoneyScreen = props => {
 
-RefundScreen = props => {
+    let cash = {
+        email: props.navigation.getParam('email'),
+        money: {
+            50: 0,
+            100: 0,
+            200: 0,
+            500: 0,
+            1000: 0,
+            2000: 0,
+            5000: 0,
+            10000: 0,
+            20000: 0,
+            50000: 0,
+            100000: 0,
+        }
+    };
 
-    RefundScreen['navigationOptions'] = screenProps => ({
+    MoneyScreen['navigationOptions'] = screenProps => ({
         title: 'Home',
-        headerTitle: "Refund",
-        headerRight: () => <TouchableOpacity
-            onPress={() => {
-                props.navigation.navigate("Profile");
-            }}
-            backgroundColor="black"
-            title="Done"
-            style={styles.boton1}
-        >
-
-            <Text style={styles.texto}> Done </Text>
-        </TouchableOpacity>
+        headerTitle: "Charge Money",
     });
 
-    const [refund, setRefund] = useState([]);
-    const [flag, setFlag] = useState(false);
+    const [quantity, setQuantity] = useState(0);
+    const [force, setForce] = useState('');
 
-    cleanEverything = () => {
-        data = copy[0];
-    }
+    saveMoney = (item) => {
+        money[item] = money[item] + 1;
+        data[item].quantity = String(money[item]);
+        setQuantity(money[item]);
+        console.log("esto es data en money", money);
+        setForce('a');
+    };
 
-    callApi = async (price,email) => {
+    organizeJson = () => {
+        let dat = {};
+        dat = money.reverse();
+        cash.money[50] = dat[0];
+        cash.money[100] = dat[1];
+        cash.money[200] = dat[2];
+        cash.money[500] = dat[3];
+        cash.money[1000] = dat[4];
+        cash.money[2000] = dat[5];
+        cash.money[5000] = dat[6];
+        cash.money[10000] = dat[7];
+        cash.money[20000] = dat[8];
+        cash.money[50000] = dat[9];
+        cash.money[100000] = dat[10];
+    };
 
-
-        if (!price) {
-            alert("There is no price");
+    sentMoney = async (data) => {
+        if (!money) {
+            alert("Please type how much money do you have");
             return;
         }
-        let ayuda = parseInt(price);
-        return await axios.post('https://refunding-backend.herokuapp.com/users/getRefund',
-        {
-            email: email,
-            price: ayuda,
-        })
-        .then((response) => {
-            console.log("Response trae devuelta: ",response.data);
-                return response;
+        console.log("andrés es un hijueputa", data);
+        const respuesta = await axios.put(`https://refunding-backend.herokuapp.com/users/currentMoney`,
+            {
+                email: props.navigation.getParam('email'),
+                money: data.money
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
-    }
 
-    useEffect(() => {
-        let price = props.navigation.getParam('price');
-        let email = props.navigation.getParam('email');
-        console.log("Price tiene: ", price);
-        const retorno = async () => {
-            const reto = await callApi(price,email);
-            console.log("El back devuelve", reto);
-            if (!reto) {        
-                console.log("Something went wrong");
-                alert("There is not enough money on your wallet");
-                props.navigation.navigate("Profile");
-                return;
-            }
-            alert("Purchase confirmed");
-            //console.log("Refund tiene", reto.data.refund);
-            setRefund(String(reto.data.refund));
-            //Acá se puede hacer machetazo pa llamar función que cambie el array data para mostrar
-            let num = ["100000", "50000", "20000", "10000", "5000", "2000", "1000", "500", "200", "100", "50"];
+        console.log(JSON.stringify(data));
+        console.log("data queda asi: ", data);
+        props.navigation.navigate("Profile");
 
-            for (let i = 0; i < 11; i++) {
-                let help = num[i];
-                //console.log("refund tiene: ", reto.data);
-                if (reto.data.refund[help]) {
-                    arr = data.filter((obj) => {
-                        return obj.id == help;
-                    });
-                    arr[0].quantity = String(reto.data.refund[help]);
-                    hel.push(arr[0]);
-                    console.log("cada iteración", arr);
-                }
-            }
-            console.log(hel);
-            data = hel;
-            setFlag(true);
-        }
-        retorno();
-    }, []);
+    };
+
 
     return (
         <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
             <FlatList
                 data={data}
-                keyExtractor={(item, index) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.container}>
-                        {item.identifier >= 4 && (  //It renders from 1000 up
-                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252073' }}>
-                                <TouchableOpacity style={styles.imageContainer} >
+                extraData={quantity}
+                keyExtractor={(item, index) => String(index)}
+                renderItem={({ item, index }) => (
+                    <View key={index} style={styles.container}>
 
+                        {item.identifier >= 4 && (  //It renders from 1000 up
+                            <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center' }}>
+                                <TouchableOpacity style={styles.imageContainer} onPress={() => {
+                                    saveMoney(index);
+
+                                }}>
                                     <Image
                                         source={item.image}
                                         style={styles.img}
@@ -202,23 +186,37 @@ RefundScreen = props => {
 
                         {item.identifier < 4 && (
                             <Card style={{ padding: 5, margin: 5, width: '70%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252073' }}>
-                                <TouchableOpacity style={styles.imageContainer} >
+                                <TouchableOpacity style={styles.imageContainer} onPress={() => {
+                                    //this._onPress(item)
+                                    saveMoney(index);
+
+                                }} >
                                     <Image
                                         source={item.image}
-
                                         style={styles.imgs}
                                     />
                                 </TouchableOpacity>
                             </Card>)}
+
                         <View style={styles.subContainer}>
                             <TouchableOpacity style={styles.touchable} >
                                 <Text style={styles.texto} > Quantity {item.quantity}</Text>
                             </TouchableOpacity>
                         </View>
-
                     </View>)}
-
             />
+
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.boton1} onPress={() => {
+                    organizeJson();
+                    console.log("cash en money", cash);
+                    sentMoney(cash);
+                    console.log("holiii");
+                    alert("The money has been charged to your account");
+                }} >
+                    <Text style={styles.texto}>Ready</Text>
+                </TouchableOpacity>
+            </View>
         </LinearGradient>
     );
 }
@@ -270,10 +268,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#252073'
     },
-    texto: {
-        color: 'white',
-        fontSize: 15
-    },
     boton1: {
         bottom: 10,
         position: 'absolute',
@@ -284,7 +278,11 @@ const styles = StyleSheet.create({
         width: 80,
         height: 40,
         right: 10
+    },
+    texto: {
+        color: 'white',
+        fontSize: 15
     }
 });
 
-export default RefundScreen;
+export default MoneyScreen;

@@ -5,7 +5,8 @@ const initState = {
     loading: false,
     token: '',
     userId: '',
-    expirationDate: ''
+    expirationDate: '',
+    uri:''
 }
 
 export const reducer = (state, action) => {
@@ -25,6 +26,13 @@ export const reducer = (state, action) => {
             expirationDate: action.payload.expirationDate
         }
     }
+    if(action == "photo"){
+        return{
+            uri: action.payload.uri
+        }
+    }
+
+    //https://oauth2.googleapis.com/tokeninfo?id_token= Url token to validate expirationDate 
 
     return state;
 }

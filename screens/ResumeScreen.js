@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Button, AsyncStorage, TouchableOpacity, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
@@ -12,39 +12,74 @@ const ResumeScreen = props => {
     const [distance, setDistance] = useState('Distance');
     const [price, setPrice] = useState('Price');
     const [refund, setRefund] = useState('Refund');
+    const [email, setEmail] = useState('');
 
-    getRefund = (price) => {  //Hace falta implementar esto visualmente
-
-        precio = parseInt(price);
-        axios.get(`https://refunding-backend.herokuapp.com/api/getRefund?price=${precio}`)
-            .then((response) => {
-                console.log(response.data.refund);
-                console.log("Llegó hasta aquí, funcionó?");
+    saveHistory = async (em, pre) => {
+        console.log("estoy entrando acá hay", em);
+        await axios.post('https://refunding-backend.herokuapp.com/users/saveHistory',
+            {
+                email: em,
+                precio: pre,
             })
             .catch((error) => {
                 console.error(error);
             });
     }
 
+    useEffect(() => {
+        retrieveData = async () => {
+            try {
+                const value = await AsyncStorage.getItem('userData');
+                if (value !== null) {
+                    // We have data!!
+                    id = JSON.parse(value)
+                    console.log("V: ", id);
+                    setEmail(id.email);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        setDistance(props.navigation.getParam('distance'));
+        setPrice(props.navigation.getParam('price'));
+        retrieveData();
+    }, []);
+
     return (
-        <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+        <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
             <View style={styles.why}>
                 <Card style={styles.card}>
-                    <Button style={styles.button} title="Ver resumen"
-                        onPress={async () => {
-                            setDistance(props.navigation.getParam('distance'));
-                            setPrice(props.navigation.getParam('price'));
-                            // console.log(props.navigation.getParam('refund'));
-                            // let ret = await getRefund(parseInt(props.navigation.getParam('price')));
-                            // console.log(ret.refund.refund);
-                        }}/>
                     {/* Añadir una vista bonita en la card para ver el resumen del viaje */}
-                    <View style={styles.vista}>
-                        <Button style={styles.but} title={distance} />
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                        >
+                            <Text style={styles.texto}>{distance}</Text>
+                        </TouchableOpacity>
                     </View>
 
-                    <View style={styles.vista}>
-                        <Button style={styles.but} title={price} />
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                        >
+                            <Text style={styles.texto}>{price}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                saveHistory(email, price);
+                                props.navigation.navigate("Refund", {
+                                    price: price,
+                                    email: email
+                                });
+                            }}
+                        >
+                            <Text style={styles.texto}>Confirm Trip</Text>
+                        </TouchableOpacity>
                     </View>
                 </Card>
             </View>
@@ -65,6 +100,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    buttonContainer: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    boton: {
+        borderRadius: 50,
+        backgroundColor: '#252073',
+        width: 150,
+        alignItems: 'center',
+        height: 40,
+        justifyContent: 'center'
     },
     mapStyle: {
         width: '90%',
@@ -87,14 +135,21 @@ const styles = StyleSheet.create({
         width: 200,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#B4E1FF'
+        backgroundColor: 'white'
     },
     button: {
         color: '#F7ECE1',
-        marginBottom: 10
+        marginBottom: 20,
+        width: 140,
+        marginTop: 10
+    },
+    texto: {
+        color: 'white',
+        fontSize: 15
     },
     vista: {
-        padding: 10
+        padding: 10,
+        width: 140
     }
 });
 

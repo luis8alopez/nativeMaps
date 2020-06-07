@@ -8,10 +8,13 @@ import {
   TextInput,
   Text,
   AsyncStorage,
+  Image,
   TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
 import Card from '../components/UI/Card';
 import axios from 'axios';
@@ -21,30 +24,58 @@ const AuthScreen = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [idToken, setIdToken] = useState('');
+  const [name, setName] = useState('');
+  const [photo, setPhoto] = useState('');
+  const [status, setStatus] = useState('');
+  const [path, setPath] = useState('');
+  const [data, setData] = useState('');
+  const [uri, setUri] = useState('');
 
-  // const dispatch = useDispatch();
+  signUpHandler = async (email, password, name, uri) => {
 
-  // const { email, password, idToken } = useSelector((state) => {
-  //   return state;
-  // });
-
-  signUpHandler = async (email, password) => {
-
-    if(!email || !password){
-      alert("Please type a valid email or password");
+    if (!email || !password || !name) {
+      alert("Please type a valid email, password or name");
       return
     }
 
-    const respuesta = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
-      {
-        email: email,
-        password: password,
-        returnSecureToken: true
+    return await axios.post('https://refunding-backend.herokuapp.com/users/save', {
+      firstName: name,
+      email: email,
+      password: password,
+      photo: uri
+    })
+      .then(function (response) {
+        console.log(response.data.flag);
+        if (response.data.flag == 1) {
+          alert("User Saved");
+        }
+        else {
+          alert("Email already registered");
+          return response.data.flag;
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
       });
-    res = respuesta.data;
-    console.log(JSON.stringify(respuesta.data.idToken));
+  }
 
-    setIdToken(respuesta.data.idToken);
+  componentDidMount = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    setStatus("granted");
+  }
+
+  _getPhotoLibrary = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3]
+    });
+    if (!result.cancelled) {
+      console.log('response', JSON.stringify(result));
+
+      setPath(result);
+      setData(result.data);
+      setUri(result.uri);
+    }
   }
 
   return (
@@ -71,10 +102,30 @@ const AuthScreen = props => {
               value={password}
             ></TextInput>
 
+            <Text>Name</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={(name) => setName(name)}
+              value={name}
+            ></TextInput>
+
+            <Text>Photo</Text>
+            <Button title="Upload image" onPress={() => {
+              componentDidMount();
+              _getPhotoLibrary();
+            }} />
+
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.boton} onPress={() => {
-                signUpHandler(email, password)
-                props.navigation.navigate("Login");
+              <TouchableOpacity style={styles.boton} onPress={async () => {
+                let flag = await signUpHandler(email, password, name, uri);
+                console.log(flag + "Flag");
+                if (flag == 0 || !flag) {
+                  props.navigation.navigate("Auth");
+                } else {
+                  props.navigation.navigate("Profile", {
+                    photo: uri
+                  });
+                }
               }} >
                 <Text style={styles.texto}>Create Account</Text>
               </TouchableOpacity>
@@ -90,6 +141,14 @@ const AuthScreen = props => {
             </View>
           </ScrollView>
         </Card>
+        {uri != '' && (
+          <View style={styles.separator}>
+            <Image
+              source={{ uri: uri }}
+              style={styles.images}
+            />
+          </View>
+        )}
       </LinearGradient>
     </KeyboardAvoidingView>
   );
@@ -103,8 +162,6 @@ AuthScreen['navigationOptions'] = screenProps => ({
   headerLeft: () => null
 })
 
-//Request post https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
-
 const styles = StyleSheet.create({
   screen: {
     flex: 1
@@ -117,7 +174,7 @@ const styles = StyleSheet.create({
   authContainer: {
     width: '80%',
     maxWidth: 600,
-    maxHeight: 400,
+    maxHeight: 480,
     padding: 20
   },
   buttonContainer: {
@@ -144,6 +201,17 @@ const styles = StyleSheet.create({
   texto: {
     color: 'white',
     fontSize: 15
+  },
+  images: {
+    padding: 10,
+    width: 150,
+    height: 150,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginHorizontal: 3
+  },
+  separator: {
+    padding: 20
   }
 });
 
