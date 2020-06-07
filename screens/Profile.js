@@ -175,6 +175,19 @@ export default class Profile extends Component {
                         </TouchableOpacity>
                     </View>
 
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.boton}
+                            onPress={() => {
+                                this.props.navigation.navigate("Current", {
+                                     email: this.state.email
+                                })                                
+                            }}
+                        >
+                            <Text style={styles.texto}>Current Cash</Text>
+                        </TouchableOpacity>
+                    </View>
+
                     <Modal
                     animationType='slide'
                     transparent={true}

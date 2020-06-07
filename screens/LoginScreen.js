@@ -46,15 +46,12 @@ const LoginScreen = props => {
                 name: name
             }))
         };
-        //Método para buscar en mongo con el id y hacer update.
+
         retrieveData = async () => {
             try {
                 const value = await AsyncStorage.getItem('userData');
                 if (value !== null) {
-                    // We have data!!
                     id = JSON.parse(value)
-                    console.log("V: ", id.userId);
-                    console.log("em: ", id.email);
                 }
             } catch (error) {
                 console.log(error);
@@ -70,8 +67,6 @@ const LoginScreen = props => {
             });
 
             if (result.type === "success") {
-                console.log("LoginScreen.js.js 21 | ", result.user);
-                //TEST
                 await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${result.idToken}`)
                     .then((response) => {
                         iat = response.data.iat;
@@ -82,7 +77,7 @@ const LoginScreen = props => {
                 const expiration = new Date(new Date().getTime() + expires * 1000); //Milisegundos
                 saveData(result.idToken, result.user.id, expiration, result.user.email, result.user.photoUrl, result.user.givenName);
                 retrieveData();
-                //Save to DB if it's a new User Cambiar a heroku
+
                 await axios.post('https://refunding-backend.herokuapp.com/users/save', {
                     name: result.user.name,
                     email: result.user.email,
@@ -103,7 +98,7 @@ const LoginScreen = props => {
                     username: result.user.givenName,
                     photo: result.user.photoUrl,
                     email: result.user.email
-                }); //after Google login redirect to Profile
+                }); 
                 return result.accessToken;
             } else {
                 return { cancelled: true };
@@ -120,10 +115,6 @@ const LoginScreen = props => {
             alert("Please type a valid email or password");
             return
         }
-
-        console.log("Lo que hay en email y password es: " + email + " " + password);
-
-        //REFACTOR DESDE MONGO
         const respuesta = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA4p-qk3jvIg6T5Uzm4AXWq4GVKA1-g1k8',
             {
                 email: email,
@@ -133,10 +124,6 @@ const LoginScreen = props => {
             .catch((error) => {
                 console.error(error);
             });
-        console.log(JSON.stringify(respuesta.data.expiresIn));
-        console.log("Respuesta tiene: ", respuesta.data);
-
-        //Crear JWT para usar el token con el claim exp
 
         saveData = (token, userId, expiration, email) => {
             AsyncStorage.setItem('userData', JSON.stringify({
@@ -148,7 +135,6 @@ const LoginScreen = props => {
         };
 
         const expiration = new Date(new Date().getTime() + parseInt(respuesta.data.expiresIn) * 1000); //Milisegundos
-        console.log("Expiration queda guardado así: ", expiration);
         saveData(respuesta.data.idToken, respuesta.data.localId, expiration, email);
         props.navigation.navigate("Find");
     }
@@ -220,8 +206,6 @@ LoginScreen['navigationOptions'] = screenProps => ({
     },
     headerLeft: () => null
 })
-
-//Request post https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
 
 const styles = StyleSheet.create({
     screen: {

@@ -125,7 +125,7 @@ class MapaScreen extends React.Component {
                 this.setState({ destination: e.nativeEvent.coordinate })
             }
         } else {
-            console.log("There is already two markers, we don't allow more");
+            alert("There is already two markers, we don't allow more");
         }
         console.log(e.nativeEvent.coordinate);
     }

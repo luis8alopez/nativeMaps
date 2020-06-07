@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {
-    ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, TextInput, Text, Platform,
-    AsyncStorage, TouchableOpacity
+import {ScrollView, View, KeyboardAvoidingView, StyleSheet, TextInput, Text, Platform,TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Card from '../components/UI/Card';
 import axios from 'axios';
-import { pause } from 'expo/build/AR';
 
 let pay = {
     email: '',
@@ -65,7 +62,6 @@ const PayAccountScreen = props => {
                                 <Text style={styles.texto}>Pay</Text>
                             </TouchableOpacity>
                         </View>
-
                     </ScrollView>
                 </Card>
             </LinearGradient>
@@ -76,7 +72,7 @@ const PayAccountScreen = props => {
 PayAccountScreen['navigationOptions'] = screenProps => ({
     title: 'Enter the debt to pay',
     headerStyle: {
-        backgroundColor: '#e7ffff', //Ajustar color bonito
+        backgroundColor: '#e7ffff', 
     }
 })
 

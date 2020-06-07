@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Image, StyleSheet, FlatList, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Button, TouchableOpacity, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { Card } from 'react-native-shadow-cards';
 
 HistoryScreen = props => {
 
-    let [historia,setHistoria] = useState([]);
+    let [historia, setHistoria] = useState([]);
 
-    goToProfile = () =>{
+    goToProfile = () => {
         props.navigation.navigate("Profile");
-     };
+    };
 
-    getHistory = async () =>{
-        const email = 'eduardo.leo8a@gmail.com'//props.navigation.getParam('email');
+    getHistory = async () => {
+        const email = props.navigation.getParam('email');
         if (!email) {
             alert("There is no price");
             return;
         }
         return await axios(`https://refunding-backend.herokuapp.com/users/getHistory?email=${email}`)
             .then((response) => {
-                console.log(response.data[0].createdAt.substr(11,11));
+                console.log(response.data[0].createdAt.substr(11, 11));
                 return response.data;
             })
             .catch((error) => {
@@ -28,48 +28,54 @@ HistoryScreen = props => {
             });
     };
 
-    parseData = () =>{
-            return historia.map((dato,i) => {
-                return (
-                    <View key={i}>
+    parseData = () => {
+        return historia.map((dato, i) => {
+            return (
+
+                <View style={{ padding: 10 }} key={i}>
+                    <Card style={styles.authContainer} >
                         <Text>
-                            {dato.createdAt.substr(11,11).concat('--',dato.updatedAt.substr(0,10))}
+                            {dato.createdAt.substr(11, 11).concat('--', dato.updatedAt.substr(0, 10))}
                         </Text>
                         <Text>
-                            $
-                            {dato.precio}
+                            ${dato.precio}
                         </Text>
-                    </View>
-                )
-            })
+
+                        <Text> </Text>
+                    </Card>
+                </View>
+
+            )
+        })
     };
 
     useEffect(() => {
         const retorno = async () => {
             const reto = await getHistory();
-            setHistoria(reto);                
+            setHistoria(reto);
         }
         retorno();
     }, []);
-    
+
     return (
-            <ScrollView>
-                <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
-                        <View style={styles.why}>
-                            <Text style={{ fontSize: 20, fontWeight: "bold", color:'#e1f5fe' }}>
-                                Accounts
-                            </Text>
-                            <Card style={styles.authContainer}>
-                                <View>
-                                    {parseData()}
-                                </View>    
-                            </Card>
-                            <Button style={styles.button} title="Finish" onPress={this.goToProfile} />
-                        </View>
-                </LinearGradient>
-            </ScrollView>
+        <ScrollView>
+            <LinearGradient colors={['#005AA7', '#FFFDE4']} style={styles.gradient}>
+                <View style={styles.why}>
+                    <Text style={{ fontSize: 20, fontWeight: "bold", color: '#e1f5fe' }}>
+                        My History    </Text>
+
+                    {parseData()}
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.boton} onPress={this.goToProfile}>
+                            <Text style={styles.texto}> Return </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </LinearGradient>
+        </ScrollView>
     );
-    
+
 };
 
 HistoryScreen['navigationOptions'] = screenProps => ({
@@ -84,10 +90,10 @@ const styles = StyleSheet.create({
         flex: 1
     },
     why: {
-        flex: 1,
         marginVertical: 30,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: 10
     },
     gradient: {
         flex: 1,
@@ -97,7 +103,8 @@ const styles = StyleSheet.create({
     authContainer: {
         width: '80%',
         maxWidth: 600,
-        padding: 20
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     boton: {
         borderRadius: 50,
@@ -110,6 +117,16 @@ const styles = StyleSheet.create({
     texto: {
         color: 'white',
         fontSize: 15
+    },
+    cont: {
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    buttonContainer: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 export default HistoryScreen;
