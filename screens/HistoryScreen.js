@@ -13,14 +13,13 @@ HistoryScreen = props => {
      };
 
     getHistory = async () =>{
-        const email = 'eduardo.leo8a@gmail.com'//props.navigation.getParam('email');
+        const email = props.navigation.getParam('email');
         if (!email) {
-            alert("There is no price");
+            alert("There is no email");
             return;
         }
         return await axios(`https://refunding-backend.herokuapp.com/users/getHistory?email=${email}`)
             .then((response) => {
-                console.log(response.data[0].createdAt.substr(11,11));
                 return response.data;
             })
             .catch((error) => {
@@ -29,19 +28,19 @@ HistoryScreen = props => {
     };
 
     parseData = () =>{
-            return historia.map((dato,i) => {
-                return (
-                    <View key={i}>
-                        <Text>
-                            {dato.createdAt.substr(11,11).concat('--',dato.updatedAt.substr(0,10))}
-                        </Text>
-                        <Text>
-                            $
-                            {dato.precio}
-                        </Text>
-                    </View>
-                )
-            })
+        return historia.map((dato,i) => {
+            return (
+                <View key={i}>
+                    <Text>
+                        {dato.createdAt.substr(11,11).concat('--',dato.updatedAt.substr(0,10))}
+                    </Text>
+                    <Text>
+                        $
+                        {dato.precio}
+                    </Text>
+                </View>
+            )
+        })     
     };
 
     useEffect(() => {
@@ -69,7 +68,6 @@ HistoryScreen = props => {
                 </LinearGradient>
             </ScrollView>
     );
-    
 };
 
 HistoryScreen['navigationOptions'] = screenProps => ({
